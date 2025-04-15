@@ -1,9 +1,21 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 const Footer: React.FC = () => {
+  const pathname = usePathname();
+
+  // Define routes where the Footer should be hidden
+  const excludedRoutes = ["/auth/login", "/auth/register",];
+
+  // Check if the current route is in the excluded routes
+  if (excludedRoutes.includes(pathname)) {
+    return null;
+  }
+
   return (
     <footer className="bg-black py-8">
-    <div className="container mx-auto px-4 text-center">
+      <div className="container mx-auto px-4 text-center">
         <div className="flex flex-col md:flex-row justify-center items-center">
           {/* Logo Section */}
           <div className="mb-4 md:mb-0 pr-10">
@@ -22,24 +34,24 @@ const Footer: React.FC = () => {
             <p className="text-gray-400">
               Join our newsletter for the latest updates.
             </p>
-          </div>          
+          </div>
         </div>
 
         {/* Social Media Section */}
         <div className="flex justify-center mt-6 space-x-6">
-          <a href="https://www.instagram.com/justeatss.id/" target="_blank" rel="noopener noreferrer">
-            <img
-              src="/assets/ig100.png"
-              alt="Instagram"
-              className="w-8 h-8"
-            />
+          <a
+            href="https://www.instagram.com/justeatss.id/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/assets/ig100.png" alt="Instagram" className="w-8 h-8" />
           </a>
-          <a href="https://wa.me/+6287741704737" target="_blank" rel="noopener noreferrer">
-            <img
-              src="/assets/wa100.png"
-              alt="WhatsApp"
-              className="w-8 h-8"
-            />
+          <a
+            href="https://wa.me/+6287741704737"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/assets/wa100.png" alt="WhatsApp" className="w-8 h-8" />
           </a>
         </div>
         {/* Copyright Section */}
@@ -66,7 +78,6 @@ const Footer: React.FC = () => {
             </a>
           </div>
         </div>
-        
       </div>
     </footer>
   );
