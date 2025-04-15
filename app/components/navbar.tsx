@@ -17,12 +17,12 @@ export default function Navbar() {
                     </Link>
                 </li>
                 <li>
-                    <Link href="/products" className="text-white">
+                    <Link href="/pages/product" className="text-white">
                         Products
                     </Link>
                 </li>
                 <li>
-                    <Link href="/about" className="text-white">
+                    <Link href="/pages/about" className="text-white">
                         About Us
                     </Link>
                 </li>

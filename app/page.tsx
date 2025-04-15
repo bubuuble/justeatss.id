@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
-import Navbar from "./components/navbar";
-
 import { useState } from "react";
-import Footer from "./components/footer";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -15,7 +12,6 @@ export default function Home() {
   return (
     <main className="flex-grow">
       {/* Hero Section with Food Image */}
-      <Navbar />
       <section className="relative">
         <img 
           alt="Delicious pastries" 
@@ -119,7 +115,6 @@ export default function Home() {
           </div>
         </form>
       </div>
-      <Footer />
     </main>
   );
 }
