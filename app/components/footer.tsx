@@ -1,4 +1,5 @@
 import React from "react";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer: React.FC = () => {
   return (
@@ -38,6 +39,13 @@ const Footer: React.FC = () => {
             <img
               src="/assets/wa100.png"
               alt="WhatsApp"
+              className="w-8 h-8"
+            />
+          </a>
+          <a href="https://twitter.com/justeatss" target="_blank" rel="noopener noreferrer">
+          <img
+              src="/assets/x.png"
+              alt="X"
               className="w-8 h-8"
             />
           </a>
