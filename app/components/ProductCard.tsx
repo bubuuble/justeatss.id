@@ -19,6 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ category, title, imageSrc }) 
           style={{ objectFit: 'cover' }} // Ensure image covers the area
           className="transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Optional: optimize image loading
+          unoptimized
         />
         {/* Overlay Text */}
         <div className="absolute inset-0 flex items-start justify-start p-4 sm:p-6 bg-black bg-opacity-10">
