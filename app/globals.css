@@ -1,6 +1,70 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   background-color: #232323;
   color: white;
   font-family: 'Poppins', sans-serif;
+}
+
+/* --- Custom Swiper Navigation Arrows --- */
+
+/* Style for both Previous and Next buttons */
+.swiper-button-prev,
+.swiper-button-next {
+    /* Shape and Background */
+    background-color: rgba(100, 100, 100, 0.6); /* Semi-transparent grey background */
+    border-radius: 50%; /* Makes the button circular */
+    width: 40px !important;    /* Custom width (use !important to override Swiper defaults if needed) */
+    height: 40px !important;   /* Custom height */
+
+    /* Arrow Color */
+    color: #ffffff !important; /* White arrow color */
+
+    /* Hover Effect */
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Darker background on hover */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background-color: rgba(60, 60, 60, 0.8); /* Darker semi-transparent grey on hover */
+}
+
+/* Style the actual arrow icon inside the button */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+    font-size: 18px !important; /* Adjust size of the '>' or '<' icon */
+    font-weight: bold !important; /* Make the arrow bolder */
+}
+
+/* --- Positioning (Adjust these values as needed) --- */
+
+/* Move the Previous button slightly off the edge */
+.swiper-button-prev {
+    left: 10px !important; /* Adjust distance from the left edge */
+    /* Or use negative value to place it outside: left: -10px !important; */
+}
+
+/* Move the Next button slightly off the edge */
+.swiper-button-next {
+    right: 10px !important; /* Adjust distance from the right edge */
+    /* Or use negative value to place it outside: right: -10px !important; */
+}
+
+
+/* --- Optional: Hide arrows on smaller screens --- */
+/* Example: Hide below 640px (Tailwind's 'sm' breakpoint) */
+@media (max-width: 639.98px) {
+  /* Uncomment the lines below if you want to hide arrows on mobile */
+  /*
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+  */
+
+  /* You might want to add horizontal padding to the container instead on mobile */
+  /* e.g., in your BestSellers component: px-4 sm:px-10 md:px-0 */
 }

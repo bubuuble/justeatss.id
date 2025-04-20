@@ -1,4 +1,3 @@
-import ProductCard from "../../components/ProductCard"; // Adjust the import path as necessary
 import React from 'react';
 import { FiShoppingBag } from 'react-icons/fi'; // Shopping bag icon
 
