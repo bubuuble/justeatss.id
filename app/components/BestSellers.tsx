@@ -69,7 +69,7 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
                {products.map((product) => (
                  <SwiperSlide key={product._id}> {/* Use Sanity's _id as key */}
                    <div className="group text-center">
-                     <Link href={`/product/${product.slug.current}` || '#'} className="block"> {/* Use slug for link */}
+                     <Link href={`/products/${product.slug.current}` || '#'} className="block"> {/* Use slug for link */}
                        <div className="aspect-square w-full overflow-hidden rounded-lg bg-zinc-800 mb-4 relative">
                          {product.imageUrl && ( // Check if imageUrl exists
                            <Image

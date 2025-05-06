@@ -7,6 +7,8 @@ const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',  // Allow access to sign-in pages and sub-routes
   '/sign-up(.*)',  // Allow access to sign-up pages and sub-routes
   '/admin(.*)',  // Allow access to admin pages and sub-routes
+  '/products(.*)', // Allow access to product pages and sub-routes
+  '/products/(.*)', // Allow access to product pages and sub-routes
   // Add other public pages or API routes below as needed:
   // '/about',
   // '/products(.*)',

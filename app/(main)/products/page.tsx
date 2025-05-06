@@ -62,7 +62,7 @@ export default async function ProductsPage() {
               // Reusable Product Card Component (or inline structure)
               <Link
                 key={product._id}
-                href={`/product/${product.slug.current}`}
+                href={`/products/${product.slug.current}`}
                 className="group block bg-zinc-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="relative aspect-square w-full overflow-hidden">
