@@ -8,6 +8,7 @@ export default defineType({
   type: 'document',
   icon: PackageIcon, // Optional icon for the studio UI
   fields: [
+    
     defineField({
       name: 'name',
       title: 'Product Name',
