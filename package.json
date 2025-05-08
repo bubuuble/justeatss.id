@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.16.0",
+    "@clerk/themes": "^2.2.42",
+    "@headlessui/react": "^2.2.2",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.85.1",
+    "@supabase/supabase-js": "^2.49.4",
     "next": "^14.2.3",
     "next-sanity": "^9.10.2",
     "react": "^18.3.1",

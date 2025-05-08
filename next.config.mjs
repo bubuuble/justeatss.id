@@ -3,26 +3,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // --- ADD OR MODIFY THIS 'images' SECTION ---
   images: {
     remotePatterns: [
+      // Keep your existing pattern for Sanity
       {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
-        port: '', // Keep empty unless Sanity uses a specific port (unlikely)
-        pathname: '/images/**', // Allow any path starting with /images/ under that hostname
+        port: '',
+        pathname: '/images/**',
       },
-      // You can add other patterns here if you use other image sources
-      // Example:
-      // {
-      //   protocol: 'https',
-      //   hostname: 'example.com',
-      // },
+      // --- ADD THIS NEW PATTERN FOR CLERK ---
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com', // Allow Clerk images
+        port: '',
+        pathname: '/**', // Allow any path under this hostname
+      },
+      // --- END ADD ---
     ],
   },
-  // --- End of images section ---
-
-  // ... any other existing configurations you might have ...
+  // ... any other existing configurations ...
 };
 
 export default nextConfig;

@@ -1,152 +1,68 @@
 // app/layout.tsx
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Appearance } from '@clerk/types';
+import { dark } from '@clerk/themes'; // <-- Import the light base theme
 import './globals.css';
 import React from 'react';
 import { SanityLive } from '@/sanity/lib/live';
 
+// Define your global appearance object here
 const clerkAppearance: Appearance = {
+  baseTheme: dark, // <-- SET THE BASE THEME TO LIGHT
+
   variables: {
-    colorPrimary: '#6366F1',
-    colorBackground: '#18181b',
-    colorText: 'white',
-    colorInputText: 'white',
-    colorInputBackground: '#1f2937',
-    colorTextSecondary: '#a1a1aa',
-    colorShimmer: 'rgba(255,255,255,0.1)',
+    // You can still override specific variables on top of the light theme
+    colorPrimary: '#6366F1', // Keep your primary brand color
+    // Remove variables that were specifically for dark mode unless needed:
+    // colorBackground: '#18181b', // Remove or adjust for light theme
+    // colorText: 'white', // Remove, let base theme handle text color
+    // colorInputText: 'white', // Remove
+    // colorInputBackground: '#1f2937', // Remove
+    // colorTextSecondary: '#a1a1aa', // Remove or adjust for light theme contrast
   },
   elements: {
-    // --- Global & Navigation ---
-    profileSectionPrimaryButton: {
-      color: 'white',
-      '&:hover': { color: '#d4d4d8' },
-    },
-    profileSectionSecondaryButton: {
-      color: 'white',
-      '&:hover': { color: '#d4d4d8' },
-    },
-    navbarItem: {
-      color: '#a1a1aa',
-      '&:hover': { backgroundColor: '#27272a', color: 'white' },
-    },
-    navbarItem__active: {
-      backgroundColor: '#3f3f46',
-      color: 'white',
-      fontWeight: '600',
-    },
-    connectedAccountLinkButton: {
-      color: 'white',
-      '&:hover': { color: '#d4d4d8' },
-    },
-    iconButton: {
-      color: '#a1a1aa',
-      '&:hover': { color: 'white', backgroundColor: '#27272a' },
-    },
-    linkButton: {
-      color: 'white',
-      '&:hover': { textDecoration: 'underline', color: '#d4d4d8' },
-    },
+    // Remove element overrides that forced dark mode styles.
+    // Keep overrides you still want (like hiding the badge or specific button styles).
 
-    // --- Card & Headers ---
-    card: {
-      backgroundColor: 'transparent',
-      boxShadow: 'none',
-      border: 'none',
-    },
-    headerTitle: {
-      color: 'white',
-      fontSize: '1.875rem',
-      fontWeight: '700',
-    },
-    headerSubtitle: {
-      color: '#a1a1aa',
-      marginBottom: '2rem',
-    },
-    dividerLine: {
-      backgroundColor: '#3f3f46',
-    },
-    dividerText: {
-      color: '#a1a1aa',
-    },
+    // Example: Maybe keep card transparent if needed for SignIn/SignUp layout
+    // card: {
+    //     backgroundColor: 'transparent',
+    //     boxShadow: 'none',
+    //     border: 'none',
+    // },
 
-    // --- Form Fields ---
-    formFieldLabel: {
-      color: 'white',
-      fontSize: '0.875rem',
-      fontWeight: '500',
-      marginBottom: '0.5rem',
-    },
-    formFieldInput: {
-      backgroundColor: '#1f2937',
-      borderColor: '#3f3f46',
-      borderRadius: '0.375rem',
-      color: 'white',
-    },
+    // Adjust button styles if the default light theme isn't exactly right
+    // For example, maybe you still want white text on your primary button:
+    // formButtonPrimary: {
+    //     backgroundColor: '#6366F1', // Uses colorPrimary
+    //     color: '#ffffff', // Override text to white if needed for contrast
+    //     // ... other button styles
+    // },
 
-    // --- Buttons ---
-    formButtonPrimary: {
-      backgroundColor: '#ffffff',
-      color: '#000000',
-      paddingTop: '0.75rem',
-      paddingBottom: '0.75rem',
-      borderRadius: '0.375rem',
-      fontWeight: '600',
-      textTransform: 'none',
-      '&:hover': { backgroundColor: '#f0f0f0' },
-    },
-    socialButtonsBlockButton: {
-      backgroundColor: '#ffffff',
-      color: '#000000',
-      borderColor: '#e5e7eb',
-      '&:hover': { backgroundColor: '#f0f0f0' },
-    },
-    socialButtonsBlockButtonText: {
-      color: '#000000',
-    },
+    // Keep customizations unrelated to dark/light theme
+    // 'REPLACE_WITH_CORRECT_USERNAME_FIELD_KEY': { /* ... username ::after rule ... */ },
 
-    // --- Footer & Badges ---
+    // Keep badge hidden
     clerkBadge: {
-      display: 'none',
-    },
-    footerActionText: {
-      color: '#a1a1aa',
-    },
-    footerActionLink: {
-      color: '#818cf8',
-      fontWeight: '600',
-      '&:hover': {
-        textDecoration: 'underline',
-        color: '#a7a7f8',
-      },
+        display: 'none'
     },
 
-    // --- User Button Popover ---
+    // Style the user button popover (it will inherit light theme, but you can refine)
     userButtonPopoverCard: {
-      backgroundColor: '#18181b',
-      boxShadow:
-        '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-      borderRadius: '0.5rem',
-      border: '1px solid #3f3f46',
+        // Default light theme card is fine, but you could add custom shadow/border
+        // boxShadow: '...',
+        // border: '...'
     },
-    userButtonPopoverActionButton: {
-      color: '#a8a8a8',
-      '&:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        color: '#ffffff',
-      },
-    },
-    userButtonPopoverActionButton__manageAccount: {},
-    userButtonPopoverActionButton__signOut: {},
-    userButtonPopoverFooter: {},
-
-    // --- Primary Badge Fix ---
-    badge: {
-      backgroundColor: '#3f3f46',
-      color: 'white',
-      fontWeight: '500',
-    },
-  },
+    // userButtonPopoverActionButton: { // Adjust if needed for light theme
+    //     color: '#...', // Default text color from light theme
+    //     '&:hover': {
+    //        backgroundColor: 'rgba(0, 0, 0, 0.05)', // Example light hover
+    //        color: '#...'
+    //     }
+    // },
+  }
 };
+
 
 export const metadata = {
   title: 'Justeatss.id',
@@ -161,7 +77,7 @@ export default function RootLayout({
   return (
     <ClerkProvider appearance={clerkAppearance}>
       <html lang="en">
-        <body className="bg-black">
+        <body className="bg-white text-black"> {/* Optional: Set base light theme for body */}
           {children}
           <SanityLive />
         </body>
