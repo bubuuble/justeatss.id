@@ -4,11 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, A11y } from 'swiper/modules';
-
-import 'swiper/css';
-import 'swiper/css/navigation';
+import { useCart } from '../(main)/context/CartContext';
 
 // Define the Product type expected from Sanity (or import from a types file)
 interface Product {
@@ -16,21 +12,25 @@ interface Product {
   name: string;
   slug: { current: string };
   price: number;
-  imageUrl?: string; // Now fetched directly
+  imageUrl?: string;
   alt?: string;
-  // Add other fields if needed
+  inStock?: boolean; // Added inStock property
 }
 
 // Accept products as a prop
 interface BestSellersProps {
-    products: Product[];
+  products: Product[];
 }
 
 const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
-  // Helper to format currency (can be moved to utils)
-  const formatCurrency = (amount: number): string => {
-     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
-  };
+  const { addToCart } = useCart();
+
+  const formatCurrency = (amount: number): string =>
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(amount);
 
   return (
     <div className="py-12 md:py-16 bg-black text-white">
@@ -50,51 +50,63 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
           </Link>
         </div>
 
-        {/* Swiper Carousel */}
-        <div className="relative px-10 md:px-0">
-          {products && products.length > 0 ? ( // Check if products exist
-             <Swiper
-               modules={[Navigation, A11y]}
-               spaceBetween={20}
-               slidesPerView={1.5}
-               navigation
-               grabCursor={true}
-               breakpoints={{
-                 640: { slidesPerView: 2, spaceBetween: 20 },
-                 768: { slidesPerView: 3, spaceBetween: 25 },
-                 1024: { slidesPerView: 4, spaceBetween: 30 },
-               }}
-               className="!pb-1"
-             >
-               {products.map((product) => (
-                 <SwiperSlide key={product._id}> {/* Use Sanity's _id as key */}
-                   <div className="group text-center">
-                     <Link href={`/products/${product.slug.current}` || '#'} className="block"> {/* Use slug for link */}
-                       <div className="aspect-square w-full overflow-hidden rounded-lg bg-zinc-800 mb-4 relative">
-                         {product.imageUrl && ( // Check if imageUrl exists
-                           <Image
-                             src={product.imageUrl}
-                             alt={product.alt || product.name} // Use defined alt or fallback to name
-                             fill
-                             className="object-cover object-center group-hover:opacity-90 group-hover:scale-105 transition-all duration-300"
-                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" // Help optimize image loading
-                           />
-                         )}
-                       </div>
-                       <h3 className="text-sm font-medium text-zinc-100 mb-1 truncate px-1">
-                           {product.name}
-                       </h3>
-                       <p className="text-sm font-semibold text-zinc-300">
-                           {formatCurrency(product.price)} {/* Format the price */}
-                       </p>
-                     </Link>
-                   </div>
-                 </SwiperSlide>
-               ))}
-             </Swiper>
-           ) : (
-             <p className="text-center text-zinc-500">No best sellers found.</p> // Fallback message
-           )}
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-center">
+          {products && products.length > 0 ? (
+            products.map((product) => (
+              <div key={product._id} className="flex flex-col items-center text-center">
+                <Link href={`/products/${product.slug.current}`} className="block w-full">
+                  <div className="aspect-square w-full overflow-hidden rounded-lg bg-zinc-800 mb-4 relative">
+                    {product.imageUrl && (
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.alt || product.name}
+                        fill
+                        className="object-cover object-center group-hover:opacity-90 group-hover:scale-105 transition-all duration-300"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                    )}
+                    {product.inStock === false && (
+                      <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+                        <span className="text-white font-semibold px-3 py-1 bg-red-600 rounded">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-sm font-medium text-zinc-100 mb-1 truncate px-1">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm font-semibold text-zinc-300">
+                    {formatCurrency(product.price)}
+                  </p>
+                </Link>
+                {/* Add to Cart Button */}
+                <button
+                  onClick={() => {
+                    addToCart({
+                      id: product._id,
+                      name: product.name,
+                      price: product.price,
+                      imageUrl: product.imageUrl,
+                      slug: product.slug?.current,
+                      inStock: product.inStock
+                    })
+                  }}
+                  className={`mt-4 w-full px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                    product.inStock === false 
+                    ? 'bg-gray-600 cursor-not-allowed text-gray-300' 
+                    : 'bg-orange-600 hover:bg-orange-700 text-white'
+                  }`}
+                  disabled={product.inStock === false}
+                >
+                  {product.inStock === false ? 'Out of Stock' : 'Add to Cart'}
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-zinc-500 col-span-full">No best sellers found.</p>
+          )}
         </div>
       </div>
     </div>

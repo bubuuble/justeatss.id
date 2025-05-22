@@ -75,6 +75,13 @@ export default defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'inStock',
+      title: 'In Stock',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Uncheck this when product is out of stock',
+    }),
     // Add other fields like stock, variants, etc.
   ],
   preview: {
@@ -82,11 +89,12 @@ export default defineType({
       title: 'name',
       media: 'image',
       category: 'category.name', // Show category name in preview
+      inStock: 'inStock',
     },
     prepare(selection) {
-      const {title, media, category} = selection
+      const {title, media, category, inStock} = selection
       return {
-        title,
+        title: inStock === false ? `${title} (Out of Stock)` : title,
         media,
         subtitle: category ? `Category: ${category}` : 'No category',
       }

@@ -129,7 +129,7 @@ const Footer: React.FC = () => {
                 <p className="font-medium text-zinc-100 mb-1">WhatsApp</p>
                 <a href="https://wa.me/+6281387017677" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white">
                   <FaWhatsapp />
-                  <span>+62 877-4170-4737</span>
+                  <span>0877-4170-4737</span>
                 </a>
               </div>
               <div>

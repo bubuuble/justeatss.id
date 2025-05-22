@@ -17,6 +17,7 @@ interface Address {
   state_province?: string | null;
   postal_code: string;
   country: string;
+  phone_number?: string | null;
   is_default?: boolean | null;
   created_at: string;
 }
@@ -38,6 +39,7 @@ export default function ManageAddresses() {
   const [stateProv, setStateProv] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isDefault, setIsDefault] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -52,24 +54,16 @@ export default function ManageAddresses() {
 
   // --- Helper Functions ---
   const fetchAddresses = async () => {
-    // setIsLoading(true); // Only set true on initial load
     setError(null);
     try {
-console.log(">>> fetchAddresses: Attempting fetch...");
-const response = await fetch('/api/addresses');
-if (!response.ok) {
-  throw new Error(`Failed to fetch addresses: ${response.statusText}`);
-}
-console.log(">>> fetchAddresses: Attempting response.json()...");
-const data: Address[] = await response.json();
-console.log(">>> fetchAddresses: response.json() successful.");
-setAddresses(data); // Update state with fetched addresses
-      
+      const response = await fetch('/api/addresses');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch addresses: ${response.statusText}`);
+      }
+      const data: Address[] = await response.json();
+      setAddresses(data); // Update state with fetched addresses
     } catch (err: any) {
-      console.error(">>> fetchAddresses: CATCH ERROR:", err); // Log caught error
-      console.log(">>> fetchAddresses: Attempting to set error state...");
       setError(err.message || 'Could not load addresses.');
-      console.log(">>> fetchAddresses: Finished setting error state."); // Does it reach here?
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +71,7 @@ setAddresses(data); // Update state with fetched addresses
 
   const resetForm = () => {
     setStreet(''); setCity(''); setStateProv(''); setPostalCode('');
-    setCountry(''); setIsDefault(false); setFormError(null);
+    setCountry(''); setPhoneNumber(''); setIsDefault(false); setFormError(null);
     setEditingAddressId(null); setFormMode(null); // Reset mode and editing ID
   };
 
@@ -95,6 +89,7 @@ setAddresses(data); // Update state with fetched addresses
     setStateProv(addr.state_province || '');
     setPostalCode(addr.postal_code);
     setCountry(addr.country);
+    setPhoneNumber(addr.phone_number || '');
     setIsDefault(addr.is_default || false);
     setFormError(null);
   };
@@ -108,7 +103,7 @@ setAddresses(data); // Update state with fetched addresses
     const method = formMode === 'edit' ? 'PUT' : 'POST';
     const bodyPayload: any = {
       street_address: street, city, state_province: stateProv || null,
-      postal_code: postalCode, country, is_default: isDefault,
+      postal_code: postalCode, country, phone_number: phoneNumber || null, is_default: isDefault,
     };
 
     // Include ID only for PUT requests
@@ -133,14 +128,11 @@ setAddresses(data); // Update state with fetched addresses
       await fetchAddresses(); // Refresh list
 
     } catch (err: any) {
-      console.error(`${method} Address Error:`, err);
       setFormError(err.message || `Could not ${formMode} address.`);
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  
 
   const handleDelete = async (addressId: string) => {
     if (!confirm('Are you sure you want to delete this address?')) return;
@@ -162,7 +154,6 @@ setAddresses(data); // Update state with fetched addresses
       await fetchAddresses(); // Refresh list
 
     } catch (err:any) {
-       console.error("Delete Address Error:", err);
        setError("Error deleting address: " + err.message);
     } finally {
         setDeletingId(null); // Clear deleting state
@@ -193,6 +184,9 @@ setAddresses(data); // Update state with fetched addresses
                 <p className="font-medium text-zinc-100">{addr.street_address}</p>
                 <p className="text-zinc-300">{addr.city}, {addr.state_province ? `${addr.state_province}, ` : ''}{addr.postal_code}</p>
                 <p className="text-zinc-300">{addr.country}</p>
+                {addr.phone_number && (
+                  <p className="text-zinc-400 text-xs mt-1">Phone: {addr.phone_number}</p>
+                )}
                 {addr.is_default && <span className="mt-1 inline-block bg-zinc-600 text-white text-xs px-1.5 py-0.5 rounded-sm">Default</span>}
               </div>
               {/* Edit/Delete buttons */}
@@ -255,6 +249,18 @@ setAddresses(data); // Update state with fetched addresses
                 <label htmlFor="country" className="block text-xs font-medium text-zinc-300 mb-1">Country *</label>
                 <input type="text" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
               </div>
+          </div>
+          {/* Phone Number */}
+          <div>
+            <label htmlFor="phoneNumber" className="block text-xs font-medium text-zinc-300 mb-1">Phone Number</label>
+            <input
+              type="Phone"
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              placeholder="e.g. +1 555-123-4567"
+            />
           </div>
           {/* Default Checkbox */}
           <div className="flex items-center pt-1">

@@ -6,7 +6,7 @@ import { FiArrowRight } from 'react-icons/fi'; // Example icon for newsletter
 export default function AboutPage() {
   return (
     // Assuming main layout provides black background and base text color
-    <main className="flex-grow text-white">
+    <main className="bg-black flex-grow text-white">
 
       {/* 1. Hero Section */}
     <section className="relative h-[65vh] md:h-[75vh] flex items-center justify-center text-center">
