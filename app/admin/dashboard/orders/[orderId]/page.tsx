@@ -25,8 +25,9 @@ async function getOrderDetails(orderId: string) {
   }
 }
 
-export default async function AdminOrderDetailPage({ params }: { params: { orderId: string }}) {
-  const order = await getOrderDetails(params.orderId);
+export default async function AdminOrderDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
+  const resolvedParams = await params;
+  const order = await getOrderDetails(resolvedParams.orderId);
 
   if (!order) {
     notFound();

@@ -57,13 +57,19 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress || cartItems.length === 0) {
-      setError("Please select a shipping address and make sure your cart is not empty.");
+      setError("Silakan pilih alamat pengiriman dan pastikan keranjang tidak kosong.");
       return;
     }
     setIsPlacingOrder(true);
     setError(null);
 
     try {
+      // Siapkan data customer dan shipping address untuk Doku
+      // Pastikan field sesuai dengan yang dibutuhkan API /api/create-order dan Doku
+      const customerName = user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Pelanggan Justeatss';
+      const customerEmail = user?.primaryEmailAddress?.emailAddress || 'email@example.com';
+      const customerPhone = selectedAddress.phone_number || user?.primaryPhoneNumber?.phoneNumber || ''; // Ambil dari alamat dulu, lalu profil
+
       const orderData = {
         cartItems: cartItems.map(item => ({
           id: item.id,
@@ -71,18 +77,28 @@ export default function CheckoutPage() {
           price: item.price,
           quantity: item.quantity,
           imageUrl: item.imageUrl,
+          slug: item.slug,
+          // Anda mungkin perlu menambahkan sku, category, url, type jika payment method Doku tertentu mewajibkannya
+          sku: item.id, // Contoh sederhana
+          category: "food-and-beverage", // Contoh, lihat daftar kategori Doku
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${item.slug}`,
         })),
         totalAmount: totalAmount,
-        shippingAddress: {
-            street_address: selectedAddress.street_address,
+        shippingAddress: { // Sesuaikan dengan field yang dibutuhkan Doku
+            first_name: customerName.split(' ')[0],
+            last_name: customerName.split(' ').slice(1).join(' ') || customerName.split(' ')[0], // Handle nama tunggal
+            address: selectedAddress.street_address,
             city: selectedAddress.city,
-            state_province: selectedAddress.state_province,
             postal_code: selectedAddress.postal_code,
-            country: selectedAddress.country,
-            phone_number: selectedAddress.phone_number,
+            phone: selectedAddress.phone_number || customerPhone, // Pastikan format Doku (misal, tanpa +)
+            country_code: selectedAddress.country.length === 3 ? selectedAddress.country : "IDN", // Doku butuh 3 digit
         },
+        customerName: customerName,
+        customerEmail: customerEmail,
+        customerPhone: customerPhone, // Pastikan format Doku (misal, tanpa +)
       };
 
+      // Panggil API route Anda yang akan menginisiasi pembayaran ke Doku
       const response = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,25 +108,25 @@ export default function CheckoutPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Failed to create order.');
+        throw new Error(result.message || 'Gagal menginisiasi pembayaran.');
       }
 
-      // --- Doku Integration Placeholder ---
-      // Here, `result.paymentUrl` (if provided by the API) would be used to redirect to Doku
-      // Or, you would initialize the Doku SDK with parameters from `result`
-      console.log('Order created, Doku payment process would start here with:', result);
-      alert(`Order ${result.orderId} created successfully! (Doku payment not yet integrated). Redirecting to success page...`);
-      // --- End Doku Placeholder ---
-
-      clearCart(); // Clear cart after success
-      router.push(`/order-success?orderId=${result.orderId}`); // Redirect to success page
+      // Jika sukses, result akan berisi paymentUrl dari Doku
+      if (result.paymentUrl) {
+        console.log("Mengarahkan ke Doku Payment URL:", result.paymentUrl);
+        // Kosongkan keranjang SEBELUM redirect, atau setelah konfirmasi pembayaran via webhook
+        // clearCart(); // Pertimbangkan kapan ini paling tepat
+        window.location.href = result.paymentUrl; // Redirect ke halaman pembayaran Doku
+      } else {
+        throw new Error('URL pembayaran Doku tidak diterima.');
+      }
 
     } catch (err: any) {
-      console.error("Error creating order:", err);
-      setError(err.message || "An error occurred while processing your order.");
-    } finally {
-      setIsPlacingOrder(false);
+      console.error("Error saat proses checkout:", err);
+      setError(err.message || "Terjadi kesalahan saat memproses pesanan Anda.");
+      setIsPlacingOrder(false); // Pastikan set loading false jika ada error sebelum redirect
     }
+    // setIsPlacingOrder(false); // Ini mungkin tidak tercapai jika redirect berhasil
   };
 
   if (!isLoaded) return <div className="text-center py-10 text-white">Loading...</div>;
@@ -124,84 +140,177 @@ export default function CheckoutPage() {
      router.push('/products');
      return <div className="text-center py-10 text-white">Cart is empty, redirecting...</div>;
   }
-
   return (
-    <div className="bg-black container mx-auto px-4 py-8 md:py-12 text-white">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8">Checkout</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Address & Items */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Address Selection */}
-          <section className="bg-zinc-900 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
-            {isLoadingAddresses ? <p>Loading addresses...</p> : userAddresses.length > 0 ? (
-              <select
-                value={selectedAddress?.id || ''}
-                onChange={(e) => {
-                  const addr = userAddresses.find(a => a.id === e.target.value);
-                  setSelectedAddress(addr || null);
-                }}
-                className="w-full p-3 rounded bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              >
-                <option value="">Select Address</option>
-                {userAddresses.map(addr => (
-                  <option key={addr.id} value={addr.id}>
-                    {addr.street_address}, {addr.city} {addr.is_default ? "(Default)" : ""}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <p className="text-zinc-400">You don't have any addresses yet.
-                <Link href="/account" className="text-indigo-400 hover:underline ml-1">Add Address</Link>
-              </p>
-            )}
-            {selectedAddress && (
-              <div className="mt-3 p-3 bg-zinc-800/50 border border-zinc-700 rounded text-sm">
-                <p>{selectedAddress.street_address}</p>
-                <p>{selectedAddress.city}, {selectedAddress.state_province} {selectedAddress.postal_code}</p>
-                <p>{selectedAddress.country}</p>
-                {selectedAddress.phone_number && <p>Tel: {selectedAddress.phone_number}</p>}
-              </div>
-            )}
-             {/* Button to manage addresses if user wants to add/edit from here */}
-             <div className="mt-2">
-                <Link href="/account" className="text-xs text-indigo-400 hover:underline">
-                    Manage Addresses
-                </Link>
-            </div>
-          </section>
-
-          {/* Cart Items */}
-          <section className="bg-zinc-900 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            {cartItems.map(item => (
-              <div key={item.id} className="flex justify-between items-center py-2 border-b border-zinc-800 last:border-b-0">
-                <div>
-                  <p className="font-medium">{item.name} (x{item.quantity})</p>
-                  <p className="text-sm text-zinc-400">{formatCurrency(item.price)}</p>
-                </div>
-                <p>{formatCurrency(item.price * item.quantity)}</p>
-              </div>
-            ))}
-          </section>
+    <div className="min-h-screen bg-black text-white">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-white mb-4">
+            <span className="font-light">Check</span>
+            <span className="font-bold text-orange-500 ml-4">out</span>
+          </h1>
+          <p className="text-lg text-zinc-400 font-light">Complete your order with secure payment</p>
         </div>
 
-        {/* Right Column: Total & Pay Button */}
-        <div className="lg:col-span-1 bg-zinc-900 p-6 rounded-lg h-fit sticky top-24">
-          <h2 className="text-xl font-semibold mb-4">Order Total</h2>
-          <div className="space-y-2 mb-6 text-sm">
-            <div className="flex justify-between"><span>Subtotal:</span> <span>{formatCurrency(totalAmount)}</span></div>
-            {/* Taxes and shipping can be added here */}
-            <div className="flex justify-between font-bold text-lg pt-2 border-t border-zinc-700"><span>Total:</span> <span>{formatCurrency(totalAmount)}</span></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          {/* Left Column: Address & Items */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Address Selection */}
+            <section className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/50">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-black font-bold text-sm">1</span>
+                </div>
+                <h2 className="text-2xl font-semibold">Shipping Address</h2>
+              </div>
+              
+              {isLoadingAddresses ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                  <span className="ml-3 text-zinc-400">Loading addresses...</span>
+                </div>
+              ) : userAddresses.length > 0 ? (
+                <div className="space-y-4">
+                  <select
+                    value={selectedAddress?.id || ''}
+                    onChange={(e) => {
+                      const addr = userAddresses.find(a => a.id === e.target.value);
+                      setSelectedAddress(addr || null);
+                    }}
+                    className="w-full p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
+                  >
+                    <option value="">Select delivery address</option>
+                    {userAddresses.map(addr => (
+                      <option key={addr.id} value={addr.id}>
+                        {addr.street_address}, {addr.city} {addr.is_default ? "(Default)" : ""}
+                      </option>
+                    ))}
+                  </select>
+                  
+                  {selectedAddress && (
+                    <div className="mt-4 p-6 bg-zinc-800/30 border border-zinc-700/50 rounded-xl">
+                      <div className="space-y-2 text-sm">
+                        <p className="font-medium text-white">{selectedAddress.street_address}</p>
+                        <p className="text-zinc-300">{selectedAddress.city}, {selectedAddress.state_province} {selectedAddress.postal_code}</p>
+                        <p className="text-zinc-300">{selectedAddress.country}</p>
+                        {selectedAddress.phone_number && <p className="text-zinc-400">📞 {selectedAddress.phone_number}</p>}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="mb-4">
+                    <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">📍</span>
+                    </div>
+                    <p className="text-zinc-400 mb-3">You don't have any addresses yet.</p>
+                    <Link href="/account" className="inline-block bg-orange-500 hover:bg-orange-600 text-black px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                      Add Address
+                    </Link>
+                  </div>
+                </div>
+              )}
+              
+              <div className="mt-4 text-center">
+                <Link href="/account" className="text-sm text-orange-400 hover:text-orange-300 transition-colors duration-300">
+                  ⚙️ Manage Addresses
+                </Link>
+              </div>
+            </section>
+
+            {/* Cart Items */}
+            <section className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/50">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-black font-bold text-sm">2</span>
+                </div>
+                <h2 className="text-2xl font-semibold">Order Summary</h2>
+                <span className="ml-auto bg-zinc-800 text-orange-400 px-3 py-1 rounded-full text-sm font-medium">
+                  {cartItems.length} item{cartItems.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              
+              <div className="space-y-4">
+                {cartItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/30 hover:border-orange-500/30 transition-all duration-300">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-white mb-1">{item.name}</h3>
+                      <p className="text-sm text-zinc-400">
+                        {formatCurrency(item.price)} × {item.quantity}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-orange-400">
+                        {formatCurrency(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <button
-            onClick={handlePlaceOrder}
-            disabled={isPlacingOrder || !selectedAddress || cartItems.length === 0}
-            className="w-full bg-white text-black py-3 rounded-md font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
-          >
-            {isPlacingOrder ? 'Placing Order...' : 'Proceed to Payment'}
-          </button>
+
+          {/* Right Column: Total & Pay Button */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/50 backdrop-blur-sm p-8 rounded-2xl border border-zinc-800/50 sticky top-24">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-black font-bold text-sm">3</span>
+                </div>
+                <h2 className="text-2xl font-semibold">Payment</h2>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between text-zinc-300">
+                  <span>Subtotal:</span> 
+                  <span>{formatCurrency(totalAmount)}</span>
+                </div>
+                <div className="flex justify-between text-zinc-300">
+                  <span>Delivery:</span> 
+                  <span className="text-green-400">Free</span>
+                </div>
+                <div className="border-t border-zinc-700/50 pt-4">
+                  <div className="flex justify-between font-bold text-xl">
+                    <span>Total:</span> 
+                    <span className="text-orange-400">{formatCurrency(totalAmount)}</span>
+                  </div>
+                </div>
+              </div>
+              
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+              
+              <button
+                onClick={handlePlaceOrder}
+                disabled={isPlacingOrder || !selectedAddress || cartItems.length === 0}
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-black py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg shadow-orange-500/25"
+              >
+                {isPlacingOrder ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
+                    Processing Order...
+                  </div>
+                ) : (
+                  '🚀 Proceed to Payment'
+                )}
+              </button>
+              
+              <div className="mt-6 text-center">
+                <p className="text-xs text-zinc-500">
+                  Secure payment powered by DOKU
+                </p>
+                <div className="flex justify-center items-center mt-2 space-x-2">
+                  <span className="text-xs text-zinc-400">🔒 SSL Encrypted</span>
+                  <span className="text-xs text-zinc-600">•</span>
+                  <span className="text-xs text-zinc-400">💳 Multiple Payment Methods</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

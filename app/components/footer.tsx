@@ -25,10 +25,10 @@ const operationalHours = [
 
 const infoLinks = [
   { name: "Shipping & Delivery", href: "#" },
-  { name: "Terms & Conditions", href: "#" },
+  { name: "Terms & Conditions", href: "/terms" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
   { name: "FAQ & Help", href: "#" },
   { name: "Store Location", href: "#" },
-  { name: "Blog", href: "#" },
 ];
 
 const availableOn = [
@@ -53,90 +53,120 @@ const Footer: React.FC = () => {
   if (isExcluded) {
     return null;
   }
-
   return (
-    <footer className="bg-zinc-900 text-zinc-300 py-12 px-6 md:px-10 lg:px-16"> {/* Darker BG, more padding */}
-      <div className="container mx-auto">
+    <footer className="bg-gradient-to-b from-zinc-900 to-black text-zinc-300 py-20 px-6 md:px-10 lg:px-16 border-t border-zinc-800/50">
+      <div className="container mx-auto max-w-7xl">
 
         {/* Top Row: Logo & Newsletter */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-8 border-b border-zinc-700">
-          {/* Logo */}
-          <Link href="/" className="mb-6 md:mb-0">
-            <img
-              src="/assets/logo.png" // Your logo path
-              alt="Justeatss.id logo"
-              className="w-24 h-auto rounded-full" // Adjust size as needed
-            />
-          </Link>
-
-          {/* Newsletter */}
-          <form className="w-full md:w-auto md:max-w-md">
-            <label htmlFor="footer-email" className="block text-sm font-medium mb-2 text-zinc-200">
-              Subscribe to our newsletter
-            </label>
-            <div className="flex">
-              <input
-                type="email"
-                id="footer-email"
-                placeholder="your.email@example.com"
-                className="flex-grow px-4 py-2 rounded-l-md bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-indigo-500 focus:border-transparent" // Style input
-              />
-              <button
-                type="submit"
-                className="px-5 py-2 rounded-r-md bg-zinc-700 text-zinc-100 font-semibold hover:bg-zinc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-zinc-600 transition-colors" // Style button
-              >
-                Subscribe
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Main Grid: Columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-10 mb-10 text-sm">
-
-          {/* Col 1: Stores & Hours (Wider) */}
-          <div className="lg:col-span-2">
-            <h3 className="text-base font-semibold text-white mb-4">
-              Our Stores - Justeatss.id
-            </h3>
-            <ul className="space-y-2 mb-6">
-              {stores.map((store) => (
-                <li key={store.name}>
-                  <a href={store.href} className="flex items-center gap-2 hover:text-white group">
-                    <FaMapMarkerAlt className="text-indigo-400 group-hover:text-indigo-300 flex-shrink-0" />
-                    <span>{store.name}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <h3 className="text-base font-semibold text-white mb-4">
-              Operational Hours
-            </h3>
-            <div className="space-y-1">
-                {operationalHours.map((op, index) => (
-                <p key={index}>
-                  <span className="font-medium text-zinc-100">{op.hours}</span>
-                </p>
-                ))}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 pb-12 border-b border-zinc-800/50">
+          {/* Logo & Brand */}
+          <div className="mb-8 lg:mb-0">
+            <Link href="/" className="group inline-block">
+              <div className="relative">
+                <img
+                  src="/assets/logo.png"
+                  alt="Justeatss.id logo"
+                  className="w-20 h-20 rounded-full transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 rounded-full bg-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md" />
+              </div>
+            </Link>
+            <div className="mt-4 space-y-2">
+              <h3 className="text-xl font-light text-white">Justeatss.id</h3>
+              <p className="text-sm text-zinc-400 max-w-xs leading-relaxed">
+                Crafting exceptional culinary experiences with passion and dedication
+              </p>
             </div>
           </div>
 
-          {/* Col 2: Contact Us */}
-          <div>
-            <h3 className="text-base font-semibold text-white mb-4">Contact Us</h3>
-            <div className="space-y-3">
+          {/* Newsletter */}
+          <div className="w-full lg:w-auto lg:max-w-md">
+            <div className="space-y-4">
               <div>
-                <p className="font-medium text-zinc-100 mb-1">WhatsApp</p>
-                <a href="https://wa.me/+6281387017677" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white">
-                  <FaWhatsapp />
-                  <span>0877-4170-4737</span>
+                <h4 className="text-lg font-medium text-white mb-2">Stay Updated</h4>
+                <p className="text-sm text-zinc-400">Get the latest updates on our delicious offerings</p>
+              </div>
+              <form className="group">
+                <div className="relative">
+                  <input
+                    type="email"
+                    id="footer-email"
+                    placeholder="Enter your email address"
+                    className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 backdrop-blur-sm"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-black font-semibold hover:from-orange-400 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-105 text-sm"
+                  >
+                    Subscribe
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Grid: Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+
+          {/* Col 1: Store Info */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-6 relative">
+                Our Store
+                <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+              </h3>
+              <ul className="space-y-3">
+                {stores.map((store) => (
+                  <li key={store.name}>
+                    <a href={store.href} className="flex items-center gap-3 hover:text-white group transition-colors duration-300">
+                      <FaMapMarkerAlt className="text-orange-500 group-hover:text-orange-400 flex-shrink-0 transition-colors duration-300" />
+                      <span className="text-sm">{store.name}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-base font-medium text-white mb-4">Hours</h4>
+              <div className="space-y-2">
+                {operationalHours.map((op, index) => (
+                  <p key={index} className="text-sm text-zinc-400">
+                    {op.hours}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Col 2: Contact */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-6 relative">
+              Contact Us
+              <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+            </h3>
+            <div className="space-y-6">
+              <div>
+                <p className="font-medium text-white mb-2 text-sm">WhatsApp</p>
+                <a 
+                  href="https://wa.me/+6281387017677" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-3 hover:text-white group transition-colors duration-300"
+                >
+                  <FaWhatsapp className="text-green-500 group-hover:text-green-400 transition-colors duration-300" />
+                  <span className="text-sm">0877-4170-4737</span>
                 </a>
               </div>
               <div>
-                <p className="font-medium text-zinc-100 mb-1">Email</p>
-                <a href="mailto:your.email@example.com" className="flex items-center gap-1.5 hover:text-white"> {/* Replace email */}
-                   <FaEnvelope />
-                   <span>Send Your Inquiry</span>
+                <p className="font-medium text-white mb-2 text-sm">Email</p>
+                <a 
+                  href="mailto:info@justeatss.id" 
+                  className="flex items-center gap-3 hover:text-white group transition-colors duration-300"
+                >
+                   <FaEnvelope className="text-orange-500 group-hover:text-orange-400 transition-colors duration-300" />
+                   <span className="text-sm">info@justeatss.id</span>
                 </a>
               </div>
             </div>
@@ -144,62 +174,74 @@ const Footer: React.FC = () => {
 
           {/* Col 3: Information */}
           <div>
-            <h3 className="text-base font-semibold text-white mb-4">Information</h3>
-            <ul className="space-y-2">
+            <h3 className="text-lg font-semibold text-white mb-6 relative">
+              Information
+              <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+            </h3>
+            <ul className="space-y-3">
               {infoLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="hover:text-white">
+                  <Link 
+                    href={link.href} 
+                    className="text-sm hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
+                  >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Col 4: Available On & Social */}
-          <div>
-            <h3 className="text-base font-semibold text-white mb-4">Available On</h3>
-            <ul className="space-y-2 mb-6">
-              {availableOn.map((platform) => (
-                <li key={platform.name}>
-                  {/* Decide if these should be links or just text */}
-                  <a href={platform.href} className="hover:text-white">
-                     {platform.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <h3 className="text-base font-semibold text-white mb-4">Social Media</h3>
-            <div className="flex items-center gap-4">
-               {socialLinks.map(({ name, href, Icon }) => (
-                <a
-                    key={name}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={name}
-                    className="text-zinc-300 hover:text-white transition-colors duration-200"
-                >
-                    <Icon className="w-5 h-5 hover:scale-110 transition-transform duration-200" />
-                </a>
+          {/* Col 4: Social & Platforms */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-6 relative">
+                Available On
+                <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
+              </h3>
+              <ul className="space-y-3">
+                {availableOn.map((platform) => (
+                  <li key={platform.name}>
+                    <a 
+                      href={platform.href} 
+                      className="text-sm hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
+                    >
+                       {platform.name}
+                    </a>
+                  </li>
                 ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-base font-medium text-white mb-4">Follow Us</h4>
+              <div className="flex items-center gap-4">
+                 {socialLinks.map(({ name, href, Icon }) => (
+                  <a
+                      key={name}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={name}
+                      className="text-zinc-400 hover:text-orange-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-800/50 group"
+                  >
+                      <Icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                  </a>
+                  ))}
+              </div>
             </div>
           </div>
 
-        </div> {/* End Main Grid */}
-
-        {/* Bottom Row: Copyright & Halal Logo */}
-        <div className="flex flex-col md:flex-row justify-between items-center border-t border-zinc-700 pt-6 text-xs"> {/* Adjusted size/padding */}
-            <p className="text-zinc-400 mb-4 md:mb-0">
-                © {new Date().getFullYear()} Justeatss.id - All Rights Reserved
-            </p>
-            {/* Add Halal Logo if needed */}
-            {/* <img src="/path/to/halal-logo.png" alt="Halal Indonesia" className="h-10 w-auto" /> */}
-             {/* Optional: Language switcher placeholder */}
-             {/* <div> English (US) ▼ </div> */}
         </div>
 
-      </div> {/* End Container */}
+        {/* Bottom Row: Copyright */}
+        <div className="text-center border-t border-zinc-800/50 pt-8">
+            <p className="text-zinc-500 text-sm">
+                © {new Date().getFullYear()} Justeatss.id - All Rights Reserved.
+            </p>
+        </div>
+
+      </div>
     </footer>
   );
 };

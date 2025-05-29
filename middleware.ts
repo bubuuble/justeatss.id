@@ -3,9 +3,9 @@ import { clerkMiddleware, createRouteMatcher, ClerkMiddlewareAuth } from '@clerk
 import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 
-const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)']);
-const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about']);
-const isAdminRoute = createRouteMatcher(['/admin/dashboard(.*)', '/admin$']);
+const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/doku-notification(.*)']);
+const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about', '/order-status(.*)']);
+const isAdminRoute = createRouteMatcher(['/admin$']);
 
 // Adjust the return type of the main handler slightly, or let TypeScript infer.
 // When auth.protect() is called and protects, it will throw/redirect, so execution

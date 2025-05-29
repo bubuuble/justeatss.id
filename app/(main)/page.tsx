@@ -49,28 +49,62 @@ async function getBestSellers(): Promise<Product[]> {
 
 export default async function Home() {
   const bestSellerProducts = await getBestSellers();
-
   return (
-    <main className="flex-grow">
+    <main className="min-h-screen bg-black">
       {/* Hero Section */}
-       <section className="relative h-[60vh] md:h-[80vh]">
-         <Image
-           alt="Delicious pastries background"
-           className="w-full h-full object-cover"
-           src="/assets/hero.jpg" // Consider making this dynamic via Sanity too
-           fill
-           priority
-         />
-         <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
-           <h1 className="text-6xl md:text-8xl font-bold text-white italic text-center px-4">
-             Justeatss.id
-           </h1>
-         </div>
+      <section className="relative h-screen overflow-hidden">
+        {/* Background with gradient overlay */}
+        <div className="absolute inset-0">
+          <Image
+            alt="Delicious pastries background"
+            className="w-full h-full object-cover opacity-40"
+            src="/assets/hero.jpg"
+            fill
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+        </div>
+        
+        {/* Hero Content */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
+          <div className="text-center space-y-8 max-w-4xl mx-auto">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white tracking-tight">
+              <span className="font-extralight">Just</span>
+              <span className="font-bold italic">eat</span>
+              <span className="font-extralight">ss</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-zinc-300 font-light tracking-wide">
+              Artisanal pastries & desserts, crafted with passion
+            </p>
+            <div className="pt-8">
+              <a 
+                href="#products" 
+                className="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-full hover:bg-white/20 transition-all duration-300 group"
+              >
+                Explore Menu
+                <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/60 rounded-full animate-bounce mt-2" />
+          </div>
+        </div>
       </section>
 
       {/* Best Sellers Section */}
-      <BestSellers products={bestSellerProducts} />
-
+      <section id="products" className="relative bg-black">
+        <div className="absolute inset-0 bg-gradient-to-b from-black to-zinc-900" />
+        <div className="relative z-10">
+          <BestSellers products={bestSellerProducts} />
+        </div>
+      </section>
     </main>
   );
 }
