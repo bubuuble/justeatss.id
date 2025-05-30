@@ -71,9 +71,9 @@ export async function POST(request: NextRequest) {
         },
       },
       callbacks: {
-        finish: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'}/payment/success`,
-        error: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'}/payment/error`,
-        pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'}/payment/pending`,
+        finish: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/payment/success`,
+        error: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/payment/error`,
+        pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/payment/pending`,
       },      expiry: {
         start_time: new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).replace('T', ' ') + ' +0700',
         unit: 'minutes',

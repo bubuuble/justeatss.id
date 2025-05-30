@@ -219,7 +219,7 @@ export default function TestPaymentPage() {
               <h3 className="text-lg font-semibold text-white mb-4">Environment Info</h3>
               <div className="text-sm text-zinc-300 space-y-2">
                 <p><strong>Mode:</strong> Sandbox (Testing)</p>
-                <p><strong>Base URL:</strong> {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'}</p>
+                <p><strong>Base URL:</strong> {process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}</p>
                 <p><strong>Client Key:</strong> {process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY ? 'Configured ✓' : 'Not configured ✗'}</p>
               </div>
             </div>

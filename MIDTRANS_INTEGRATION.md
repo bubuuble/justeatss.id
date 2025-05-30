@@ -35,7 +35,7 @@ NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=SB-Mid-client-q1PGPa9UjktedwwN
 MERCHANT_ID_SANDBOX=G753863671
 
 # Base URL for callbacks
-NEXT_PUBLIC_BASE_URL=http://localhost:3001
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 # For Production (when you go live)
 # MIDTRANS_SERVER_KEY=YOUR_PRODUCTION_SERVER_KEY

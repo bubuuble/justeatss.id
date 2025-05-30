@@ -42,7 +42,7 @@ const testPayment = async () => {
     console.log('Testing Midtrans payment creation...');
     console.log('Test order:', JSON.stringify(testOrder, null, 2));
 
-    const response = await fetch('http://localhost:3001/api/midtrans', {
+    const response = await fetch('http://localhost:3000/api/midtrans', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const testWebhook = async () => {
     console.log('\nTesting webhook endpoint...');
     
     // Test GET request to webhook
-    const getResponse = await fetch('http://localhost:3001/api/midtrans/notification');
+    const getResponse = await fetch('http://localhost:3000/api/midtrans/notification');
     const getResult = await getResponse.json();
     
     console.log('Webhook GET response:', JSON.stringify(getResult, null, 2));
