@@ -1,7 +1,12 @@
-// app/(main)/layout.tsx
 import React from 'react';
-import Navbar from '../components/navbar'; // Adjust import path if needed
-import Footer from '../components/footer'; // Adjust import path if needed
+import Navbar from '../components/navbar';
+import Footer from '../components/footer';
+
+export const metadata = {
+  icons: {
+    icon: '/assets/logo.png',
+  },
+};
 
 export default function MainLayout({
   children,
@@ -9,9 +14,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen"> {/* Example structure */}
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow"> {/* Ensure content takes up space */}
+      <main className="flex-grow">
         {children}
       </main>
       <Footer />

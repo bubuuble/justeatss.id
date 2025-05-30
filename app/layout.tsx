@@ -21,11 +21,14 @@ export default function RootLayout({
       {/* --- WRAP WITH CART PROVIDER --- */}
       <CartProvider>
         <html lang="en">
-          <body className="bg-white text-black"> {/* Or your dark theme body classes */}
+            <head>
+            <link rel="icon" href="/assets/logo.png" type="image/png" />
+            </head>
+            <body className="bg-white text-black"> {/* Or your dark theme body classes */}
             {/* Navbar and Footer are rendered by (main)/layout.tsx */}
             {children}
             <SanityLive />
-          </body>
+            </body>
         </html>
       </CartProvider>
       {/* --- END WRAP --- */}

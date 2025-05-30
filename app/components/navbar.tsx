@@ -363,35 +363,6 @@ const Navbar: React.FC = () => {
               </span>
             )}
           </Link>
-
-          {/* Wishlist Link */}
-          <button className="w-full flex items-center px-4 py-4 rounded-xl text-base font-medium text-white hover:bg-zinc-800/50 hover:text-pink-400 transition-all duration-300 group">
-            <span className="mr-3 relative">
-              <FiHeart className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
-              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                0
-              </span>
-            </span>
-            <span className="flex-1">Wishlist</span>
-          </button>
-
-          {/* Notifications */}
-          <button className="w-full flex items-center px-4 py-4 rounded-xl text-base font-medium text-white hover:bg-zinc-800/50 hover:text-orange-400 transition-all duration-300 group">
-            <span className="mr-3 relative">
-              <FiBell className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
-              {notifications > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                  {notifications}
-                </span>
-              )}
-            </span>
-            <span className="flex-1">Notifications</span>
-            {notifications > 0 && (
-              <span className="text-red-400 text-sm font-semibold">
-                {notifications} new
-              </span>
-            )}
-          </button>
         </div>
         
         {/* Auth Links at Bottom */}
