@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher, ClerkMiddlewareAuth } from '@clerk
 import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 
-const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/doku-notification(.*)']);
+const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/doku-notification(.*)', '/api/midtrans(.*)']);
 const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about', '/order-status(.*)']);
 const isAdminRoute = createRouteMatcher(['/admin$']);
 

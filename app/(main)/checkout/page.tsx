@@ -96,10 +96,8 @@ export default function CheckoutPage() {
         customerName: customerName,
         customerEmail: customerEmail,
         customerPhone: customerPhone, // Pastikan format Doku (misal, tanpa +)
-      };
-
-      // Panggil API route Anda yang akan menginisiasi pembayaran ke Doku
-      const response = await fetch('/api/create-order', {
+      };      // Panggil API route Midtrans untuk menginisiasi pembayaran
+      const response = await fetch('/api/midtrans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
@@ -111,14 +109,14 @@ export default function CheckoutPage() {
         throw new Error(result.message || 'Gagal menginisiasi pembayaran.');
       }
 
-      // Jika sukses, result akan berisi paymentUrl dari Doku
-      if (result.paymentUrl) {
-        console.log("Mengarahkan ke Doku Payment URL:", result.paymentUrl);
-        // Kosongkan keranjang SEBELUM redirect, atau setelah konfirmasi pembayaran via webhook
-        // clearCart(); // Pertimbangkan kapan ini paling tepat
-        window.location.href = result.paymentUrl; // Redirect ke halaman pembayaran Doku
+      // Jika sukses, result akan berisi redirectUrl dari Midtrans
+      if (result.redirectUrl) {
+        console.log("Mengarahkan ke Midtrans Payment URL:", result.redirectUrl);
+        // Kosongkan keranjang SETELAH redirect sukses
+        clearCart();
+        window.location.href = result.redirectUrl; // Redirect ke halaman pembayaran Midtrans
       } else {
-        throw new Error('URL pembayaran Doku tidak diterima.');
+        throw new Error('URL pembayaran Midtrans tidak diterima.');
       }
 
     } catch (err: any) {

@@ -115,11 +115,10 @@ export default function TermsPage() {
                 </ul>
               </div>
 
-              <div>
-                <h3 className="text-lg font-medium mb-2 text-zinc-100">Payment</h3>
+              <div>                <h3 className="text-lg font-medium mb-2 text-zinc-100">Payment</h3>
                 <ul className="list-disc list-inside text-zinc-300 space-y-2">
                   <li>Payment must be completed at the time of order placement</li>
-                  <li>We accept various payment methods through DOKU payment gateway</li>
+                  <li>We accept various payment methods through Midtrans payment gateway</li>
                   <li>All payments are processed securely through certified payment providers</li>
                   <li>Payment confirmation is required before order processing begins</li>
                   <li>Failed payments will result in automatic order cancellation</li>
