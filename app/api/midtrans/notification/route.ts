@@ -1,5 +1,6 @@
 // app/api/midtrans/notification/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { client } from '../../../../sanity/lib/client';
 const midtransClient = require('midtrans-client');
 
 // Initialize Midtrans Core API
@@ -82,35 +83,83 @@ export async function POST(request: NextRequest) {
         console.log(`Unknown transaction status: ${transaction_status} for order ${order_id}`);
         shouldUpdateOrder = false;
         break;
-    }
+    }    if (shouldUpdateOrder) {
+      // Update order status in Sanity
+      try {
+        const orderQuery = `*[_type == "order" && orderId == $orderId][0]`;
+        const existingOrder = await client.fetch(orderQuery, { orderId: order_id });
 
-    if (shouldUpdateOrder) {
-      // TODO: Update order status in your database
-      // Example:
-      // await updateOrderStatus(order_id, {
-      //   status: orderStatus,
-      //   transaction_id,
-      //   payment_type,
-      //   transaction_status,
-      //   updated_at: new Date().toISOString()
-      // });
+        if (existingOrder) {
+          // Prepare update data
+          const updateData: any = {};
+          updateData.paymentStatus = transaction_status;
+
+          // Update order status based on payment status
+          if (transaction_status === 'settlement' || transaction_status === 'capture') {
+            updateData.orderStatus = 'confirmed';
+          } else if (transaction_status === 'pending') {
+            updateData.orderStatus = 'pending_confirmation';
+          } else if (['deny', 'cancel', 'expire', 'failed', 'fraud', 'denied'].includes(transaction_status)) {
+            updateData.orderStatus = 'cancelled';
+          } else if (['refund', 'partial_refund'].includes(transaction_status)) {
+            updateData.orderStatus = 'refunded';
+          }
+
+          // Update payment details
+          updateData.paymentDetails = {
+            _type: 'paymentDetails',
+            transactionId: transaction_id,
+            paymentType: payment_type,
+            transactionTime: new Date().toISOString(),
+            settlementTime: transaction_status === 'settlement' ? new Date().toISOString() : undefined,
+            fraudStatus: fraud_status,
+            grossAmount: gross_amount,
+            signatureKey: signature_key,
+            rawStatus: transaction_status,
+          };
+
+          // Add to order history (append, don't overwrite)
+          const historyEntry = {
+            _type: 'orderHistory',
+            status: updateData.orderStatus || existingOrder.orderStatus,
+            timestamp: new Date().toISOString(),
+            note: `Payment ${transaction_status} - Transaction ID: ${transaction_id}`,
+            updatedBy: 'system',
+          };
+
+          // Use Sanity patch to append to orderHistory array
+          await client
+            .patch(existingOrder._id)
+            .set(updateData)
+            .setIfMissing({ orderHistory: [] })
+            .insert('after', 'orderHistory[-1]', [historyEntry])
+            .set({ paymentGatewayResponse: JSON.stringify(notification) })
+            .commit();
+
+          console.log(`✅ Order ${order_id} updated successfully in Sanity`);
+        } else {
+          console.log(`⚠️ Order ${order_id} not found in Sanity`);
+        }
+      } catch (error) {
+        console.error(`❌ Error updating order ${order_id} in Sanity:`, error);
+      }
 
       console.log(`Order ${order_id} status updated to: ${orderStatus}`);
 
-      // TODO: Implement additional business logic based on status
+      // Implement additional business logic based on status
       switch (orderStatus) {
         case 'paid':
-          // Send confirmation email
-          // Update inventory
-          // Start order fulfillment process
+          console.log(`📧 TODO: Send confirmation email for order ${order_id}`);
+          console.log(`📦 TODO: Update inventory for order ${order_id}`);
+          console.log(`🚀 TODO: Start order fulfillment process for order ${order_id}`);
           break;
         case 'cancelled':
-          // Release reserved inventory
-          // Send cancellation notification
+          console.log(`📦 TODO: Release reserved inventory for order ${order_id}`);
+          console.log(`📧 TODO: Send cancellation notification for order ${order_id}`);
           break;
         case 'refunded':
-          // Handle refund process
-          // Update inventory if needed
+          console.log(`💰 TODO: Handle refund process for order ${order_id}`);
+          console.log(`📦 TODO: Update inventory if needed for order ${order_id}`);
           break;
       }
     }

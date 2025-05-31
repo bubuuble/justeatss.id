@@ -19,4 +19,13 @@ export const sanityClient = createClient({
   // token: process.env.SANITY_API_READ_TOKEN, // Uncomment if using token
 });
 
+// Client with write permissions for API routes
+export const client = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false, // Disable CDN for write operations
+  token: process.env.SANITY_API_WRITE_TOKEN, // Write token for admin operations
+});
+
 // You can add other helper functions here, like one for @sanity/image-url
