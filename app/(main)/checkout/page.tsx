@@ -64,8 +64,6 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
-      // Siapkan data customer dan shipping address untuk Doku
-      // Pastikan field sesuai dengan yang dibutuhkan API /api/create-order dan Doku
       const customerName = user?.fullName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Pelanggan Justeatss';
       const customerEmail = user?.primaryEmailAddress?.emailAddress || 'email@example.com';
       const customerPhone = selectedAddress.phone_number || user?.primaryPhoneNumber?.phoneNumber || ''; // Ambil dari alamat dulu, lalu profil
@@ -299,7 +297,7 @@ export default function CheckoutPage() {
               
               <div className="mt-6 text-center">
                 <p className="text-xs text-zinc-500">
-                  Secure payment powered by DOKU
+                  Secure payment powered by Midtrans
                 </p>
                 <div className="flex justify-center items-center mt-2 space-x-2">
                   <span className="text-xs text-zinc-400">🔒 SSL Encrypted</span>
