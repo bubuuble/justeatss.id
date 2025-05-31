@@ -13,11 +13,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   if (!userId) {
     redirect('/sign-in');
   }
-
   const hasAdminAccess = await isUserAdmin();
   
   if (!hasAdminAccess) {
-    redirect('/');
+    redirect('/access-denied');
   }
 
   return (

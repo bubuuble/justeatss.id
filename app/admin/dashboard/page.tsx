@@ -127,12 +127,17 @@ export default async function AdminDashboard() {
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 text-sm sm:text-base"
             >
               📋 Manage Orders
-            </Link>
-            <Link
+            </Link>            <Link
               href="/admin/studio" // Path to your Sanity Studio
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 text-sm sm:text-base"
             >
               📦 Open Sanity Studio
+            </Link>
+            <Link
+              href="/admin/settings"
+              className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 text-sm sm:text-base"
+            >
+              ⚙️ Admin Settings
             </Link>
             <Link
               href="/"
