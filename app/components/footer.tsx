@@ -156,7 +156,7 @@ const Footer: React.FC = () => {
                   className="flex items-center gap-3 hover:text-white group transition-colors duration-300"
                 >
                   <FaWhatsapp className="text-green-500 group-hover:text-green-400 transition-colors duration-300" />
-                  <span className="text-sm">0877-4170-4737</span>
+                  <span className="text-sm">+62-813-8701-7677</span>
                 </a>
               </div>
               <div>

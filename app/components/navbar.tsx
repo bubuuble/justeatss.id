@@ -210,24 +210,27 @@ const Navbar: React.FC = () => {
                       </button>
                     </Link>
                   </div>
-                </ClientSignedOut>
-                <ClientSignedIn fallback={<div className="ml-3 h-10 w-10 rounded-full bg-zinc-700 animate-pulse"></div>}>
-                  <button
-                    onClick={() => setIsAccountModalOpen(true)}
-                    className="ml-3 flex items-center justify-center h-10 w-10 rounded-full overflow-hidden bg-zinc-700 hover:ring-2 hover:ring-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-110 group relative"
-                    aria-label="Open account menu"
-                  >
-                    {user?.imageUrl ? (
-                      <Image src={user.imageUrl} alt="User profile" width={40} height={40} className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-orange-500 to-orange-600">
-                        <span className="text-sm font-bold text-white">
-                          {user?.firstName?.charAt(0) || ''}{user?.lastName?.charAt(0) || ''}
-                        </span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-orange-500/20 to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </button>
+                </ClientSignedOut>                <ClientSignedIn fallback={<div className="ml-3 h-10 w-10 rounded-full bg-zinc-700 animate-pulse"></div>}>
+                  <div className="relative ml-3">
+                    <button
+                      onClick={() => setIsAccountModalOpen(!isAccountModalOpen)}
+                      className="flex items-center justify-center h-10 w-10 rounded-full overflow-hidden bg-zinc-700 hover:ring-2 hover:ring-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-110 group relative"
+                      aria-label="Open account menu"
+                    >
+                      {user?.imageUrl ? (
+                        <Image src={user.imageUrl} alt="User profile" width={40} height={40} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-orange-500 to-orange-600">
+                          <span className="text-sm font-bold text-white">
+                            {user?.firstName?.charAt(0) || ''}{user?.lastName?.charAt(0) || ''}
+                          </span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-orange-500/20 to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </button>
+                    {/* Account Dropdown positioned relative to this container */}
+                    <AccountModal isOpen={isAccountModalOpen} setIsOpen={setIsAccountModalOpen} />
+                  </div>
                 </ClientSignedIn>
               </div>
             </div>
@@ -251,8 +254,7 @@ const Navbar: React.FC = () => {
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors duration-300"
                 >
                   Search
-                </button>
-              </form>
+                </button>              </form>
             </div>
           )}
         </div>
@@ -395,12 +397,8 @@ const Navbar: React.FC = () => {
               <FiUser className="mr-2" />
               My Account
             </button>
-          </ClientSignedIn>
-        </div>
+          </ClientSignedIn>        </div>
       </div>
-
-      {/* Account Modal */}
-      <AccountModal isOpen={isAccountModalOpen} setIsOpen={setIsAccountModalOpen} />
     </>
   );
 };
