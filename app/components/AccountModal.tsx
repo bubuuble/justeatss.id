@@ -124,12 +124,20 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                     <ManageAddresses />
                   </Tab.Panel>
                 </Tab.Panels>
-              </Tab.Group>
-
-              {/* Logout button with improved styling */}
-              <div className="flex-shrink-0 border-t border-zinc-700/50 px-6 py-4 bg-zinc-800/30">
+              </Tab.Group>              {/* Logout button with improved styling */}
+              <div className="flex-shrink-0 border-t border-zinc-700/50 px-6 py-4 bg-zinc-800/30 space-y-3">
+                {/* Account Settings Link */}
+                <a 
+                  href="/account"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-medium py-2.5 px-5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-orange-900/30"
+                >
+                  <FiUser className="mr-2" />
+                  Account Settings
+                </a>
+                
                 <SignOutButton redirectUrl="/">
-                  <button className="flex items-center bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-medium py-2.5 px-5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-red-900/30">
+                  <button className="flex items-center w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-medium py-2.5 px-5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-red-900/30">
                     <FiLogOut className="mr-2" />
                     Keluar
                   </button>

@@ -3,8 +3,8 @@ import { clerkMiddleware, createRouteMatcher, ClerkMiddlewareAuth } from '@clerk
 import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 
-const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/doku-notification(.*)', '/api/midtrans(.*)']);
-const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about', '/order-status(.*)']);
+const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/midtrans(.*)', '/api/addresses(.*)', '/api/profile(.*)', '/api/debug(.*)']);
+const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about', '/order-status(.*)', '/api/debug(.*)', '/api/orders/create-sample']);
 const isAdminRoute = createRouteMatcher(['/admin$']);
 
 // Adjust the return type of the main handler slightly, or let TypeScript infer.
