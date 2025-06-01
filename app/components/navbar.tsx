@@ -34,12 +34,15 @@ const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [notifications] = useState(3); // Dummy notification count
-
   // Enhanced navigation items with icons
   const navigationItems = [
     { href: "/", label: "Home", icon: FiHome, emoji: "🏠" },
     { href: "/products", label: "Products", icon: FiPackage, emoji: "🛍️" },
     { href: "/about", label: "About", icon: FiInfo, emoji: "ℹ️" },
+  ];
+  // Additional navigation items for authenticated users
+  const userNavigationItems = [
+    { href: "/orders", label: "My Orders", icon: FiTrendingUp, emoji: "📦" },
   ];
 
   // Handle scroll effect with navbar transparency
@@ -126,8 +129,7 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Center: Navigation Links & Search (Desktop) */}
-            <div className="hidden md:flex md:items-center md:space-x-1">
-              {/* Navigation Links */}
+            <div className="hidden md:flex md:items-center md:space-x-1">              {/* Navigation Links */}
               <div className="flex items-center space-x-1">
                 {navigationItems.map((item) => {
                   const isActive = pathname === item.href;
@@ -149,6 +151,30 @@ const Navbar: React.FC = () => {
                     </Link>
                   );
                 })}
+                
+                {/* User Navigation Items for Authenticated Users */}
+                <ClientSignedIn fallback={null}>
+                  {userNavigationItems.map((item) => {
+                    const isActive = pathname === item.href || (item.href === '#orders' && pathname === '/');
+                    return (
+                      <Link 
+                        key={item.href}
+                        href={item.href} 
+                        className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group flex items-center space-x-2 ${
+                          isActive 
+                            ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
+                            : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"
+                        }`}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span className="relative z-10">{item.label}</span>
+                        {isActive && (
+                          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-orange-500 rounded-full" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </ClientSignedIn>
               </div>
 
               {/* Search Bar */}
@@ -323,8 +349,7 @@ const Navbar: React.FC = () => {
         </div>
           
         {/* Menu Navigation Links */}
-        <div className="px-6 py-2 flex-grow space-y-2">
-          {navigationItems.map((item) => {
+        <div className="px-6 py-2 flex-grow space-y-2">          {navigationItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link 
@@ -347,6 +372,33 @@ const Navbar: React.FC = () => {
               </Link>
             );
           })}
+          
+          {/* User Navigation Items for Authenticated Users */}
+          <ClientSignedIn fallback={null}>
+            {userNavigationItems.map((item) => {
+              const isActive = pathname === item.href || (item.href === '#orders' && pathname === '/');
+              return (
+                <Link 
+                  key={item.href}
+                  href={item.href} 
+                  className={`flex items-center px-4 py-4 rounded-xl text-base font-medium transition-all duration-300 group ${
+                    isActive 
+                      ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
+                      : "text-white hover:bg-zinc-800/50 hover:text-orange-400"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="mr-3 text-xl group-hover:scale-110 transition-transform duration-300">
+                    {item.emoji}
+                  </span>
+                  <span className="flex-1">{item.label}</span>
+                  {isActive && (
+                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </ClientSignedIn>
           
           {/* Divider */}
           <div className="border-t border-zinc-800/50 my-4" />

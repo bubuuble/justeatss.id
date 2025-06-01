@@ -96,15 +96,15 @@ export default async function Home() {
             <div className="w-1 h-3 bg-white/60 rounded-full animate-bounce mt-2" />
           </div>
         </div>
-      </section>
-
-      {/* Best Sellers Section */}
+      </section>      {/* Best Sellers Section */}
       <section id="products" className="relative bg-black">
         <div className="absolute inset-0 bg-gradient-to-b from-black to-zinc-900" />
         <div className="relative z-10">
           <BestSellers products={bestSellerProducts} />
         </div>
       </section>
+
+
     </main>
   );
 }
