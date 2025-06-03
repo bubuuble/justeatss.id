@@ -177,22 +177,21 @@ export default function ManageAddresses() {
           // Show address card OR the edit form if this address is being edited
           editingAddressId === addr.id ? (
               <AddressForm key={`form-${addr.id}`} isEditing={true} /> // Render form in edit mode
-          ) : (
-            <div key={addr.id} className="bg-zinc-800 p-3 rounded-md shadow flex justify-between items-start gap-2">
+          ) : (            <div key={addr.id} className="bg-zinc-800 p-3 sm:p-4 rounded-md shadow flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-2">
               {/* Address details */}
-              <div className="flex-grow">
-                <p className="font-medium text-zinc-100">{addr.street_address}</p>
-                <p className="text-zinc-300">{addr.city}, {addr.state_province ? `${addr.state_province}, ` : ''}{addr.postal_code}</p>
-                <p className="text-zinc-300">{addr.country}</p>
+              <div className="flex-grow w-full sm:w-auto">
+                <p className="font-medium text-zinc-100 text-sm sm:text-base">{addr.street_address}</p>
+                <p className="text-zinc-300 text-xs sm:text-sm">{addr.city}, {addr.state_province ? `${addr.state_province}, ` : ''}{addr.postal_code}</p>
+                <p className="text-zinc-300 text-xs sm:text-sm">{addr.country}</p>
                 {addr.phone_number && (
                   <p className="text-zinc-400 text-xs mt-1">Phone: {addr.phone_number}</p>
                 )}
                 {addr.is_default && <span className="mt-1 inline-block bg-zinc-600 text-white text-xs px-1.5 py-0.5 rounded-sm">Default</span>}
               </div>
               {/* Edit/Delete buttons */}
-              <div className="flex flex-col space-y-1 items-end flex-shrink-0 text-xs">
-                 <button onClick={() => handleShowEditForm(addr)} className="text-indigo-400 hover:text-indigo-300 hover:underline disabled:opacity-50" disabled={!!deletingId}>Edit</button>
-                 <button onClick={() => handleDelete(addr.id)} className="text-red-500 hover:text-red-400 hover:underline disabled:opacity-50" disabled={deletingId === addr.id || !!editingAddressId}>
+              <div className="flex flex-row sm:flex-col space-x-3 sm:space-x-0 sm:space-y-1 items-center sm:items-end flex-shrink-0 text-xs w-full sm:w-auto justify-end">
+                 <button onClick={() => handleShowEditForm(addr)} className="text-indigo-400 hover:text-indigo-300 hover:underline disabled:opacity-50 px-2 py-1" disabled={!!deletingId}>Edit</button>
+                 <button onClick={() => handleDelete(addr.id)} className="text-red-500 hover:text-red-400 hover:underline disabled:opacity-50 px-2 py-1 flex items-center" disabled={deletingId === addr.id || !!editingAddressId}>
                     {deletingId === addr.id ? <LoadingSpinner/> : 'Delete'}
                  </button>
               </div>
@@ -218,69 +217,68 @@ export default function ManageAddresses() {
 
   // --- Separate Form Component (for reuse between Add/Edit) ---
   function AddressForm({ isEditing }: { isEditing: boolean }) {
-    return (
-       <form onSubmit={handleFormSubmit} className="mt-4 bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 space-y-3">
+    return (       <form onSubmit={handleFormSubmit} className="mt-4 bg-zinc-800/50 p-3 sm:p-4 rounded-lg border border-zinc-700 space-y-3">
           <h3 className="text-base font-semibold text-white mb-2">{isEditing ? 'Edit Address' : 'Add New Address'}</h3>
           {formError && <p className="text-red-400 text-xs -mt-2 mb-2">{formError}</p>}
 
           {/* Street */}
           <div>
             <label htmlFor="street" className="block text-xs font-medium text-zinc-300 mb-1">Street Address *</label>
-            <input type="text" id="street" value={street} onChange={(e) => setStreet(e.target.value)} required className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
+            <input type="text" id="street" value={street} onChange={(e) => setStreet(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
           </div>
           {/* City / State */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="city" className="block text-xs font-medium text-zinc-300 mb-1">City *</label>
-                <input type="text" id="city" value={city} onChange={(e) => setCity(e.target.value)} required className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
+                <input type="text" id="city" value={city} onChange={(e) => setCity(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
               </div>
               <div>
                 <label htmlFor="stateProv" className="block text-xs font-medium text-zinc-300 mb-1">State / Province</label>
-                <input type="text" id="stateProv" value={stateProv} onChange={(e) => setStateProv(e.target.value)} className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
+                <input type="text" id="stateProv" value={stateProv} onChange={(e) => setStateProv(e.target.value)} className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
               </div>
           </div>
            {/* Postal / Country */}
-           <div className="grid grid-cols-2 gap-3">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="postalCode" className="block text-xs font-medium text-zinc-300 mb-1">Postal Code *</label>
-                <input type="text" id="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
+                <input type="text" id="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
               </div>
               <div>
                 <label htmlFor="country" className="block text-xs font-medium text-zinc-300 mb-1">Country *</label>
-                <input type="text" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
+                <input type="text" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
               </div>
           </div>
           {/* Phone Number */}
           <div>
             <label htmlFor="phoneNumber" className="block text-xs font-medium text-zinc-300 mb-1">Phone Number</label>
             <input
-              type="Phone"
+              type="tel"
               id="phoneNumber"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-2 py-1.5 rounded text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
               placeholder="e.g. +1 555-123-4567"
             />
           </div>
           {/* Default Checkbox */}
           <div className="flex items-center pt-1">
-              <input type="checkbox" id="isDefault" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="h-4 w-4 rounded border-zinc-600 bg-zinc-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-zinc-800"/>
+              <input type="checkbox" id="isDefault" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="h-3 w-3 sm:h-4 sm:w-4 rounded border-zinc-600 bg-zinc-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-zinc-800"/>
               <label htmlFor="isDefault" className="ml-2 block text-xs text-zinc-300">Set as default shipping address</label>
           </div>
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-3 pt-2">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-2">
              <button
                 type="button"
                 onClick={resetForm} // Use resetForm to cancel add or edit
                 disabled={isSubmitting}
-                className="px-3 py-1.5 border border-zinc-600 rounded text-xs text-zinc-300 hover:bg-zinc-700 disabled:opacity-50"
+                className="w-full sm:w-auto px-3 py-1.5 border border-zinc-600 rounded text-xs text-zinc-300 hover:bg-zinc-700 disabled:opacity-50"
             >
                 Cancel
              </button>
              <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded text-xs text-white font-semibold disabled:opacity-50 flex items-center"
+                className="w-full sm:w-auto px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded text-xs text-white font-semibold disabled:opacity-50 flex items-center justify-center"
             >
                 {isSubmitting && <LoadingSpinner />}
                 {isSubmitting ? 'Saving...' : (isEditing ? 'Update Address' : 'Save Address')}

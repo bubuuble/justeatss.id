@@ -274,10 +274,8 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
           leaveTo="opacity-0"
         >
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+        </Transition.Child>        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-2 sm:p-4">
             <Transition.Child
               as={React.Fragment}
               enter="ease-out duration-300"
@@ -287,18 +285,17 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 shadow-2xl transition-all">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-zinc-700/50 bg-gradient-to-r from-zinc-800/50 to-zinc-900/50">
+              <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-xl sm:rounded-2xl bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 shadow-2xl transition-all min-h-[90vh] sm:min-h-0 max-h-[95vh] flex flex-col">                {/* Header */}
+                <div className="flex items-center justify-between p-4 sm:p-6 border-b border-zinc-700/50 bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 flex-shrink-0">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
-                      <FiUser className="h-5 w-5 text-white" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
+                      <FiUser className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                     </div>
                     <div>
-                      <Dialog.Title as="h3" className="text-xl font-semibold text-white">
+                      <Dialog.Title as="h3" className="text-lg sm:text-xl font-semibold text-white">
                         Account Settings
                       </Dialog.Title>
-                      <p className="text-zinc-400 text-sm">Manage your profile and preferences</p>
+                      <p className="text-zinc-400 text-xs sm:text-sm">Manage your profile and preferences</p>
                     </div>
                   </div>
                   <button
@@ -307,11 +304,9 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                   >
                     <FiX className="h-5 w-5" />
                   </button>
-                </div>
-
-                {/* Tab Navigation */}
-                <div className="border-b border-zinc-700/50 bg-zinc-800/30">
-                  <nav className="flex space-x-1 p-1 px-6">
+                </div>                {/* Tab Navigation */}
+                <div className="border-b border-zinc-700/50 bg-zinc-800/30 flex-shrink-0">
+                  <nav className="flex space-x-1 p-1 px-3 sm:px-6 overflow-x-auto">
                     {[
                       { id: 'profile', label: 'Profile', icon: FiUser },
                       { id: 'email', label: 'Email', icon: FiMail },
@@ -321,44 +316,40 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
-                        className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                        className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                           activeTab === tab.id
                             ? 'text-orange-400 bg-orange-500/10 border border-orange-500/20'
                             : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
                         }`}
                       >
-                        <tab.icon className="h-4 w-4" />
-                        <span>{tab.label}</span>
+                        <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="sm:hidden">{tab.label.charAt(0)}</span>
                       </button>
                     ))}
                   </nav>
-                </div>
-
-                {/* Alert Messages */}
+                </div>                {/* Alert Messages */}
                 {error && (
-                  <div className="m-6 mb-0 bg-red-900/50 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl backdrop-blur-sm">
+                  <div className="m-3 sm:m-6 mb-0 bg-red-900/50 border border-red-500/50 text-red-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl backdrop-blur-sm">
                     <div className="flex items-center">
-                      <div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>
-                      {error}
+                      <div className="w-2 h-2 bg-red-400 rounded-full mr-2 sm:mr-3"></div>
+                      <span className="text-xs sm:text-sm">{error}</span>
                     </div>
                   </div>
                 )}
                 {successMessage && (
-                  <div className="m-6 mb-0 bg-green-900/50 border border-green-500/50 text-green-200 px-4 py-3 rounded-xl backdrop-blur-sm">
+                  <div className="m-3 sm:m-6 mb-0 bg-green-900/50 border border-green-500/50 text-green-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl backdrop-blur-sm">
                     <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
-                      {successMessage}
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2 sm:mr-3"></div>
+                      <span className="text-xs sm:text-sm">{successMessage}</span>
                     </div>
                   </div>
-                )}
-
-                {/* Content */}
-                <div className="p-6 max-h-[70vh] overflow-y-auto">
+                )}                {/* Content */}
+                <div className="p-3 sm:p-6 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto flex-1">
                   {/* Profile Tab */}
                   {activeTab === 'profile' && (
-                    <div className="space-y-6">
-                      {/* Profile Image Section */}
-                      <div className="flex items-center space-x-6 p-6 bg-zinc-800/30 rounded-xl border border-zinc-700/30">
+                    <div className="space-y-6">                      {/* Profile Image Section */}
+                      <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 p-4 sm:p-6 bg-zinc-800/30 rounded-xl border border-zinc-700/30">
                         <div className="relative group">
                           {profileImagePreview ? (
                             <Image 
@@ -366,11 +357,11 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                               alt="Profile" 
                               width={96} 
                               height={96} 
-                              className="rounded-full w-24 h-24 object-cover ring-4 ring-orange-500/20 group-hover:ring-orange-500/40 transition-all duration-300" 
+                              className="rounded-full w-20 h-20 sm:w-24 sm:h-24 object-cover ring-4 ring-orange-500/20 group-hover:ring-orange-500/40 transition-all duration-300" 
                             />
                           ) : (
-                            <div className="w-24 h-24 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-full flex items-center justify-center text-zinc-400 ring-4 ring-zinc-600/20">
-                              <FiCamera className="text-2xl" />
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-full flex items-center justify-center text-zinc-400 ring-4 ring-zinc-600/20">
+                              <FiCamera className="text-xl sm:text-2xl" />
                             </div>
                           )}
                           <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -378,25 +369,25 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                           </div>
                         </div>
                         
-                        <div className="flex-1">
-                          <label htmlFor="profileImage" className="block text-sm font-medium text-zinc-300 mb-2">Profile Picture</label>
+                        <div className="flex-1 w-full">
+                          <label htmlFor="profileImage" className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">Profile Picture</label>
                           <input
                             type="file"
                             id="profileImage"
                             accept="image/*"
                             onChange={handleProfileImageChange}
-                            className="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-orange-500/10 file:text-orange-400 hover:file:bg-orange-500/20 file:cursor-pointer cursor-pointer transition-all duration-300"
+                            className="block w-full text-xs sm:text-sm text-zinc-400 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-orange-500/10 file:text-orange-400 hover:file:bg-orange-500/20 file:cursor-pointer cursor-pointer transition-all duration-300"
                           />
                           {profileImageFile && (
                             <button 
                               type="button" 
                               onClick={handleProfileImageUpload} 
                               disabled={isLoading} 
-                              className="mt-3 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-green-500/25 text-sm font-medium"
+                              className="mt-3 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-green-500/25 text-xs sm:text-sm font-medium w-full sm:w-auto"
                             >
                               {isLoading ? (
-                                <span className="flex items-center">
-                                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                                <span className="flex items-center justify-center">
+                                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
                                   Uploading...
                                 </span>
                               ) : (
@@ -408,44 +399,42 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                       </div>
 
                       {/* Profile Form */}
-                      <form onSubmit={handleProfileUpdate} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <form onSubmit={handleProfileUpdate} className="space-y-6">                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="firstName" className="block text-sm font-medium text-zinc-300 mb-2">First Name</label>
+                            <label htmlFor="firstName" className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">First Name</label>
                             <input
                               type="text"
                               id="firstName"
                               value={firstName}
                               onChange={(e) => setFirstName(e.target.value)}
-                              className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 text-sm sm:text-base"
                               placeholder="Enter your first name"
                             />
                           </div>
                           <div>
-                            <label htmlFor="lastName" className="block text-sm font-medium text-zinc-300 mb-2">Last Name</label>
+                            <label htmlFor="lastName" className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">Last Name</label>
                             <input
                               type="text"
                               id="lastName"
                               value={lastName}
                               onChange={(e) => setLastName(e.target.value)}
-                              className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
-                              placeholder="Enter your last name"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 text-sm sm:text-base"                              placeholder="Enter your last name"
                             />
                           </div>
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-zinc-300 mb-2">Current Email</label>
-                          <div className="w-full px-4 py-3 bg-zinc-800/30 border border-zinc-600/30 rounded-xl text-zinc-300 flex items-center">
-                            <FiMail className="text-orange-400 mr-2" />
-                            {currentEmail}
+                          <label className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">Current Email</label>
+                          <div className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/30 border border-zinc-600/30 rounded-xl text-zinc-300 flex items-center text-sm sm:text-base">
+                            <FiMail className="text-orange-400 mr-2 flex-shrink-0" />
+                            <span className="truncate">{currentEmail}</span>
                           </div>
                         </div>
 
                         <button 
                           type="submit" 
                           disabled={isLoading} 
-                          className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-orange-500/25 font-medium"
+                          className="w-full px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-orange-500/25 font-medium text-sm sm:text-base"
                         >
                           {isLoading ? (
                             <span className="flex items-center justify-center">
@@ -464,24 +453,23 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                   {activeTab === 'email' && (
                     <div className="space-y-6">
                       {!isVerifyingEmail ? (
-                        <form onSubmit={handleEmailChangeRequest} className="space-y-6">
-                          <div>
-                            <label className="block text-sm font-medium text-zinc-300 mb-2">Current Email</label>
-                            <div className="w-full px-4 py-3 bg-zinc-800/30 border border-zinc-600/30 rounded-xl text-zinc-300 flex items-center">
-                              <FiMail className="text-orange-400 mr-2" />
-                              {currentEmail}
+                        <form onSubmit={handleEmailChangeRequest} className="space-y-6">                          <div>
+                            <label className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">Current Email</label>
+                            <div className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/30 border border-zinc-600/30 rounded-xl text-zinc-300 flex items-center text-sm sm:text-base">
+                              <FiMail className="text-orange-400 mr-2 flex-shrink-0" />
+                              <span className="truncate">{currentEmail}</span>
                             </div>
                           </div>
                           
                           <div>
-                            <label htmlFor="newEmail" className="block text-sm font-medium text-zinc-300 mb-2">New Email Address</label>
+                            <label htmlFor="newEmail" className="block text-xs sm:text-sm font-medium text-zinc-300 mb-2">New Email Address</label>
                             <input
                               type="email"
                               id="newEmail"
                               value={newEmail}
                               onChange={(e) => setNewEmail(e.target.value)}
                               required
-                              className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
+                              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/50 border border-zinc-600/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 text-sm sm:text-base"
                               placeholder="Enter new email address"
                             />
                           </div>
@@ -489,7 +477,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                           <button 
                             type="submit" 
                             disabled={isLoading} 
-                            className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-medium"
+                            className="w-full px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-blue-500/25 font-medium text-sm sm:text-base"
                           >
                             {isLoading ? (
                               <span className="flex items-center justify-center">
@@ -624,17 +612,15 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                       <ManageAddresses />
                     </div>
                   )}
-                </div>
-
-                {/* Footer */}
-                <div className="border-t border-zinc-700/50 p-6 bg-zinc-800/30">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-zinc-400">
+                </div>                {/* Footer */}
+                <div className="border-t border-zinc-700/50 p-3 sm:p-6 bg-zinc-800/30 flex-shrink-0">
+                  <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
+                    <div className="text-xs sm:text-sm text-zinc-400">
                       Signed in as <span className="text-white font-medium">{currentEmail}</span>
                     </div>
                     <SignOutButton redirectUrl="/">
-                      <button className="flex items-center space-x-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl transition-all duration-300">
-                        <FiLogOut className="h-4 w-4" />
+                      <button className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-xl transition-all duration-300 text-xs sm:text-sm">
+                        <FiLogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span>Sign Out</span>
                       </button>
                     </SignOutButton>
