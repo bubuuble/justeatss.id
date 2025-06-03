@@ -71,67 +71,83 @@ export default function CartPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-12">
-          {/* Cart Items Section */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-12">          {/* Cart Items Section */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             {cartItems.map((item: CartItem) => (
-              <div key={item.id} className="group bg-zinc-900/50 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-zinc-800/50 hover:border-orange-500/30 transition-all duration-500">
-                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                  {/* Product Image */}
-                  <div className="flex-shrink-0 mb-3 sm:mb-0">
-                    {item.imageUrl ? (
-                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-zinc-800">
-                        <Image 
-                          src={item.imageUrl} 
-                          alt={item.name} 
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500" 
-                        />
+              <div key={item.id} className="group bg-gradient-to-r from-zinc-900/80 to-zinc-800/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-zinc-700/50 hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
+                  {/* Product Image & Info Section */}
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
+                      {item.imageUrl ? (
+                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-zinc-800 ring-2 ring-zinc-700/50 group-hover:ring-orange-500/30 transition-all duration-300">
+                          <Image 
+                            src={item.imageUrl} 
+                            alt={item.name} 
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300" 
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-zinc-800 rounded-xl flex items-center justify-center ring-2 ring-zinc-700/50">
+                          <FiShoppingCart className="w-6 h-6 text-zinc-500" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      <Link 
+                        href={item.slug ? `/products/${item.slug}` : '#'} 
+                        className="text-sm sm:text-lg font-semibold text-white hover:text-orange-400 transition-colors duration-300 block mb-1 line-clamp-2"
+                      >
+                        {item.name}
+                      </Link>
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-zinc-400">
+                        <span>Unit Price:</span>
+                        <span className="font-medium text-orange-400">{formatCurrency(item.price)}</span>
                       </div>
-                    ) : (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 bg-zinc-800 rounded-xl flex items-center justify-center">
-                        <span className="text-zinc-500 text-xs sm:text-sm">No Image</span>
+                    </div>
+                  </div>
+
+                  {/* Controls Section */}
+                  <div className="flex items-center justify-between lg:justify-end gap-4 lg:gap-6">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center bg-zinc-800/50 rounded-xl p-1 border border-zinc-700/50">
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)} 
+                        disabled={item.quantity <= 1} 
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-transparent hover:bg-zinc-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center text-zinc-300 hover:text-white"
+                      >
+                        <FiMinus className="w-4 h-4" />
+                      </button>
+                      <div className="w-12 sm:w-14 text-center">
+                        <span className="font-bold text-sm sm:text-base text-white">{item.quantity}</span>
                       </div>
-                    )}
-                  </div>
-                  {/* Product Info */}
-                  <div className="flex-grow min-w-0 w-full">
-                    <Link 
-                      href={item.slug ? `/products/${item.slug}` : '#'} 
-                      className="text-base sm:text-xl font-medium text-white hover:text-orange-400 transition-colors duration-300 block mb-1 sm:mb-2 truncate"
-                    >
-                      {item.name}
-                    </Link>
-                    <p className="text-base sm:text-lg font-semibold text-orange-400">{formatCurrency(item.price)}</p>
-                  </div>
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-2 sm:gap-3 mt-3 sm:mt-0">
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)} 
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-transparent hover:bg-zinc-700/50 transition-all duration-200 flex items-center justify-center text-zinc-300 hover:text-white"
+                      >
+                        <FiPlus className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Total Price */}
+                    <div className="text-right min-w-[80px] sm:min-w-[100px]">
+                      <div className="text-xs text-zinc-400 mb-1">Total</div>
+                      <div className="text-lg sm:text-xl font-bold text-white">{formatCurrency(item.price * item.quantity)}</div>
+                    </div>
+
+                    {/* Remove Button */}
                     <button 
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)} 
-                      disabled={item.quantity <= 1} 
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+                      onClick={() => removeFromCart(item.id)} 
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/40 transition-all duration-300 flex items-center justify-center group/delete"
+                      title="Remove item"
                     >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
-                    <span className="w-8 sm:w-12 text-center font-semibold text-base sm:text-lg">{item.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)} 
-                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition-all duration-300 flex items-center justify-center"
-                    >
-                      <FiPlus className="w-4 h-4" />
+                      <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5 group-hover/delete:scale-110 transition-transform duration-200" />
                     </button>
                   </div>
-                  {/* Total Price */}
-                  <div className="text-right min-w-[80px] sm:min-w-[100px] mt-3 sm:mt-0">
-                    <p className="text-base sm:text-xl font-bold text-white">{formatCurrency(item.price * item.quantity)}</p>
-                  </div>
-                  {/* Remove Button */}
-                  <button 
-                    onClick={() => removeFromCart(item.id)} 
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 transition-all duration-300 flex items-center justify-center mt-3 sm:mt-0"
-                  >
-                    <FiTrash2 className="w-5 h-5" />
-                  </button>
                 </div>
               </div>
             ))}
