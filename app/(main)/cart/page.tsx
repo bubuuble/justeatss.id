@@ -69,12 +69,14 @@ export default function CartPage() {
           <p className="text-base sm:text-lg text-zinc-400">
             {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-12">          {/* Cart Items Section */}
+        </div>        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-12">
+          {/* Cart Items Section */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             {cartItems.map((item: CartItem) => (
-              <div key={item.id} className="group bg-gradient-to-r from-zinc-900/80 to-zinc-800/60 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-zinc-700/50 hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300">
+              <div key={item.id} className="group relative bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-zinc-700/30 hover:border-orange-500/60 hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
+                {/* Subtle background pattern */}
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
                   {/* Product Image & Info Section */}
                   <div className="flex items-center gap-4 flex-1 min-w-0">
