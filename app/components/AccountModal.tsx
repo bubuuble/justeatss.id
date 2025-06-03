@@ -22,11 +22,12 @@ interface ProfileData {
 interface AccountModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  initialTab?: 'profile' | 'email' | 'password' | 'addresses';
 }
 
-const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
+const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen, initialTab = 'profile' }) => {
   const { isLoaded, user } = useUser();
-  const [activeTab, setActiveTab] = useState<'profile' | 'email' | 'password' | 'addresses'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'email' | 'password' | 'addresses'>(initialTab);
   
   // Profile data state
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
@@ -306,7 +307,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                   </button>
                 </div>                {/* Tab Navigation */}
                 <div className="border-b border-zinc-700/50 bg-zinc-800/30 flex-shrink-0">
-                  <nav className="flex space-x-1 p-1 px-3 sm:px-6 overflow-x-auto">
+                  <nav className="flex space-x-1 p-1 px-3 sm:px-6 overflow-x-auto scrollbar-hide">
                     {[
                       { id: 'profile', label: 'Profile', icon: FiUser },
                       { id: 'email', label: 'Email', icon: FiMail },
@@ -316,19 +317,18 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen }) => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
-                        className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                        className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                           activeTab === tab.id
                             ? 'text-orange-400 bg-orange-500/10 border border-orange-500/20'
                             : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
                         }`}
                       >
                         <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <span className="hidden sm:inline">{tab.label}</span>
-                        <span className="sm:hidden">{tab.label.charAt(0)}</span>
+                        <span>{tab.label}</span>
                       </button>
                     ))}
                   </nav>
-                </div>                {/* Alert Messages */}
+                </div>{/* Alert Messages */}
                 {error && (
                   <div className="m-3 sm:m-6 mb-0 bg-red-900/50 border border-red-500/50 text-red-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl backdrop-blur-sm">
                     <div className="flex items-center">

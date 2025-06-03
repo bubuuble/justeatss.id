@@ -6,6 +6,7 @@ import { useCart, CartItem  } from '../context/CartContext';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // For redirect
+import AccountModal from '../../components/AccountModal';
 
 // Type for saved/selected address
 interface Address {
@@ -21,14 +22,45 @@ export default function CheckoutPage() {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { user, isLoaded } = useUser();
   const router = useRouter();
-
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [userAddresses, setUserAddresses] = useState<Address[]>([]);
-  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const totalAmount = getCartTotal();
+
+  // Function to open account modal on addresses tab
+  const handleAddAddress = () => {
+    setIsAccountModalOpen(true);
+  };
+
+  // Refresh addresses when modal closes
+  const handleModalClose = async (wasOpen: boolean) => {
+    setIsAccountModalOpen(false);
+    if (wasOpen && user) {
+      // Refresh addresses if modal was open (meaning user might have added/modified addresses)
+      const fetchUserAddresses = async () => {
+        setIsLoadingAddresses(true);
+        try {
+          const response = await fetch('/api/addresses');
+          if (response.ok) {
+            const data: Address[] = await response.json();
+            setUserAddresses(data);
+            // Auto-select default address if available and none currently selected
+            if (!selectedAddress) {
+              const defaultAddr = data.find(addr => addr.is_default);
+              if (defaultAddr) setSelectedAddress(defaultAddr);
+              else if (data.length > 0) setSelectedAddress(data[0]);
+            }
+          }
+        } catch (err) {
+          console.error("Error refreshing addresses:", err);
+        } finally {
+          setIsLoadingAddresses(false);
+        }
+      };
+      await fetchUserAddresses();
+    }  };
 
   // Fetch user's saved addresses
   useEffect(() => {
@@ -54,6 +86,31 @@ export default function CheckoutPage() {
       fetchUserAddresses();
     }
   }, [user, isLoaded]);
+
+  // Refresh addresses when account modal closes
+  useEffect(() => {
+    if (!isAccountModalOpen && isLoaded && user) {
+      const refetchAddresses = async () => {
+        try {
+          const response = await fetch('/api/addresses');
+          if (response.ok) {
+            const data: Address[] = await response.json();
+            setUserAddresses(data);
+            // Update selected address if it was modified
+            if (selectedAddress) {
+              const updatedSelected = data.find(addr => addr.id === selectedAddress.id);
+              if (updatedSelected) {
+                setSelectedAddress(updatedSelected);
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Error refreshing addresses:", err);
+        }
+      };
+      refetchAddresses();
+    }
+  }, [isAccountModalOpen, isLoaded, user, selectedAddress]);
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress || cartItems.length === 0) {
@@ -194,16 +251,17 @@ export default function CheckoutPage() {
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="text-center py-8">
+              ) : (                <div className="text-center py-8">
                   <div className="mb-4">
                     <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-3">
                       <span className="text-2xl">📍</span>
-                    </div>
-                    <p className="text-zinc-400 mb-3">You don't have any addresses yet.</p>
-                    <Link href="/account" className="inline-block bg-orange-500 hover:bg-orange-600 text-black px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                    </div>                    <p className="text-zinc-400 mb-3">You don't have any addresses yet.</p>
+                    <button 
+                      onClick={handleAddAddress} 
+                      className="inline-block bg-orange-500 hover:bg-orange-600 text-black px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                    >
                       Add Address
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
@@ -304,11 +362,21 @@ export default function CheckoutPage() {
                   <span className="text-xs text-zinc-600">•</span>
                   <span className="text-xs text-zinc-400">💳 Multiple Payment Methods</span>
                 </div>
-              </div>
-            </div>
+              </div>            </div>
           </div>
         </div>
-      </div>
+      </div>        {/* Account Modal for Address Management */}
+      <AccountModal 
+        isOpen={isAccountModalOpen} 
+        setIsOpen={(open) => {
+          if (!open) {
+            handleModalClose(isAccountModalOpen);
+          } else {
+            setIsAccountModalOpen(open);
+          }
+        }} 
+        initialTab="addresses"
+      />
     </div>
   );
 }
