@@ -15,7 +15,8 @@ import {
   FiEye,
   FiChevronRight,
   FiCalendar,
-  FiDollarSign
+  FiDollarSign,
+  FiUser
 } from 'react-icons/fi';
 
 interface OrderItem {
@@ -134,40 +135,39 @@ const UserOrderHistory: React.FC = () => {
         return <FiPackage className="w-4 h-4 text-gray-500" />;
     }
   };
-
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'pending_confirmation':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
       case 'confirmed':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'processing':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'shipped':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
     }
   };
 
   const getPaymentStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'settlement':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
       case 'cancel':
       case 'deny':
       case 'expire':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30';
     }
   };
 
@@ -194,18 +194,21 @@ const UserOrderHistory: React.FC = () => {
       minimumFractionDigits: 0
     }).format(price);
   };
-
   if (!isLoaded || loading) {
     return (
-      <div className="bg-gray-900 text-white py-16">
-        <div className="container mx-auto px-4">
+      <div className="bg-black min-h-screen text-white relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/30 via-transparent to-orange-900/5"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 py-20 max-w-7xl relative z-10">
           <div className="max-w-4xl mx-auto">
-            <div className="animate-pulse space-y-4">
+            <div className="animate-pulse space-y-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-gray-800 rounded-xl p-6">
-                  <div className="h-4 bg-gray-700 rounded w-1/4 mb-4"></div>
-                  <div className="h-3 bg-gray-700 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-700 rounded w-1/3"></div>
+                <div key={i} className="bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl rounded-2xl p-6 border border-zinc-700/30">
+                  <div className="h-6 bg-zinc-700/50 rounded-xl w-1/4 mb-4"></div>
+                  <div className="h-4 bg-zinc-700/50 rounded-lg w-1/2 mb-2"></div>
+                  <div className="h-4 bg-zinc-700/50 rounded-lg w-1/3"></div>
                 </div>
               ))}
             </div>
@@ -213,232 +216,326 @@ const UserOrderHistory: React.FC = () => {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
+  }  if (!user) {
     return (
-      <div className="bg-gray-900 text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-md mx-auto">
-            <FiPackage className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Sign In to View Orders</h3>
-            <p className="text-gray-400 mb-6">Please sign in to see your order history</p>
-            <Link 
-              href="/sign-in"
-              className="inline-flex items-center px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              Sign In
-            </Link>
+      <div className="bg-black min-h-screen text-white relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/30 via-transparent to-orange-900/5"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 py-20 flex items-center justify-center min-h-screen relative z-10">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl rounded-3xl p-12 border border-zinc-700/30">
+              <div className="mb-8 relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-2xl mx-auto flex items-center justify-center">
+                  <FiPackage className="w-10 h-10 text-zinc-400" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500/20 rounded-full animate-pulse"></div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Sign In to View Orders</h3>
+              <p className="text-zinc-400 mb-8 leading-relaxed">
+                Please sign in to access your order history and track your purchases
+              </p>
+              <Link 
+                href="/sign-in"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-500/25"
+              >
+                <FiUser className="w-5 h-5" />
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     );
   }
-
   if (error) {
     return (
-      <div className="bg-gray-900 text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-md mx-auto">
-            <FiXCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Unable to Load Orders</h3>
-            <p className="text-gray-400 mb-6">{error}</p>
-            <button 
-              onClick={() => fetchOrders(0, statusFilter)}
-              className="inline-flex items-center px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <FiRefreshCw className="w-4 h-4 mr-2" />
-              Try Again
-            </button>
+      <section className="bg-black min-h-screen text-white relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/30 via-transparent to-orange-900/5"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-zinc-500/5 rounded-full blur-3xl"></div>
+        
+        <div className="relative z-10 container mx-auto px-4 py-16">
+          <div className="flex justify-center">
+            <div className="max-w-md w-full">
+              <div className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-2xl p-8 text-center">
+                <div className="mb-6">
+                  <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-full flex items-center justify-center">
+                    <FiXCircle className="w-10 h-10 text-red-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent mb-3">
+                    Unable to Load Orders
+                  </h3>
+                  <p className="text-zinc-400 leading-relaxed">{error}</p>
+                </div>
+                
+                <button 
+                  onClick={() => fetchOrders(0, statusFilter)}
+                  className="group w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25"
+                >
+                  <FiRefreshCw className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-500" />
+                  Try Again
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      </section>
+    );}
   return (
-    <section id="orders" className="bg-gray-900 text-white py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+    <section id="orders" className="bg-black min-h-screen text-white relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/30 via-transparent to-orange-900/5"></div>
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 py-20 max-w-7xl relative z-10">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Your Order History
-            </h2>
-            <p className="text-gray-400 text-lg">
-              Track your orders and see your purchase history
+          <div className="text-center mb-16">
+            <div className="mb-6">
+              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 bg-clip-text text-transparent mb-4">
+                📦 Order History
+              </h1>
+              <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto rounded-full"></div>
+            </div>
+            <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto">
+              Track your orders and see your complete purchase history with detailed information
             </p>
           </div>
 
           {/* Status Filter */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {[
-                { value: 'all', label: 'All Orders' },
-                { value: 'pending_confirmation', label: 'Pending' },
-                { value: 'confirmed', label: 'Confirmed' },
-                { value: 'processing', label: 'Processing' },
-                { value: 'shipped', label: 'Shipped' },
-                { value: 'delivered', label: 'Delivered' },
-                { value: 'cancelled', label: 'Cancelled' }
-              ].map((filter) => (
-                <button
-                  key={filter.value}
-                  onClick={() => setStatusFilter(filter.value)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    statusFilter === filter.value
-                      ? 'bg-white text-black'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
+          <div className="mb-12">
+            <div className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-700/30 rounded-2xl p-6">
+              <h3 className="text-lg font-semibold text-white mb-4 text-center">Filter by Status</h3>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {[
+                  { value: 'all', label: '🔍 All Orders', count: orders.length },
+                  { value: 'pending_confirmation', label: '⏳ Pending', count: orders.filter(o => o.orderStatus === 'pending_confirmation').length },
+                  { value: 'confirmed', label: '✅ Confirmed', count: orders.filter(o => o.orderStatus === 'confirmed').length },
+                  { value: 'processing', label: '⚙️ Processing', count: orders.filter(o => o.orderStatus === 'processing').length },
+                  { value: 'shipped', label: '🚚 Shipped', count: orders.filter(o => o.orderStatus === 'shipped').length },
+                  { value: 'delivered', label: '📦 Delivered', count: orders.filter(o => o.orderStatus === 'delivered').length },
+                  { value: 'cancelled', label: '❌ Cancelled', count: orders.filter(o => o.orderStatus === 'cancelled').length }
+                ].map((filter) => (
+                  <button
+                    key={filter.value}
+                    onClick={() => setStatusFilter(filter.value)}
+                    className={`group relative px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                      statusFilter === filter.value
+                        ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25'
+                        : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700/70 border border-zinc-600/30 hover:border-orange-500/30'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      {filter.label}
+                      {filter.count > 0 && (
+                        <span className={`px-2 py-0.5 rounded-full text-xs ${
+                          statusFilter === filter.value
+                            ? 'bg-white/20 text-white'
+                            : 'bg-zinc-700 text-zinc-300'
+                        }`}>
+                          {filter.count}
+                        </span>
+                      )}
+                    </span>
+                    {statusFilter === filter.value && (
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/20 to-red-500/20 animate-pulse"></div>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Orders List */}
+          </div>          {/* Orders List */}
           {orders.length === 0 ? (
-            <div className="text-center py-12">
-              <FiPackage className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No Orders Found</h3>
-              <p className="text-gray-400 mb-6">
-                {statusFilter === 'all' 
-                  ? "You haven't placed any orders yet" 
-                  : `No orders with status: ${statusFilter}`
-                }
-              </p>
-              <Link 
-                href="/products"
-                className="inline-flex items-center px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                Start Shopping
-              </Link>
+            <div className="text-center py-16">
+              <div className="bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl rounded-3xl p-12 border border-zinc-700/30 max-w-lg mx-auto">
+                <div className="mb-6 relative">
+                  <div className="w-24 h-24 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-2xl mx-auto flex items-center justify-center">
+                    <FiPackage className="w-12 h-12 text-zinc-400" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500/20 rounded-full animate-pulse"></div>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">No Orders Found</h3>
+                <p className="text-zinc-400 mb-8 leading-relaxed">
+                  {statusFilter === 'all' 
+                    ? "You haven't placed any orders yet. Start exploring our delicious products!" 
+                    : `No orders found with status: ${statusFilter.replace('_', ' ')}`
+                  }
+                </p>
+                <Link 
+                  href="/products"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-500/25"
+                >
+                  <FiPackage className="w-5 h-5" />
+                  Start Shopping
+                </Link>
+              </div>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {orders.map((order) => (
                 <div 
                   key={order._id} 
-                  className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 hover:border-gray-600 transition-colors"
+                  className="group bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl rounded-2xl border border-zinc-700/30 hover:border-orange-500/30 transition-all duration-500 transform hover:scale-[1.02] shadow-xl hover:shadow-2xl hover:shadow-orange-500/10"
                 >
                   {/* Order Header */}
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                    <div className="flex items-center gap-3 mb-2 md:mb-0">
-                      <div className="p-2 bg-gray-700 rounded-lg">
-                        {getStatusIcon(order.orderStatus)}
+                  <div className="p-6 border-b border-zinc-700/30">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="relative">
+                          <div className="p-3 bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-xl group-hover:from-orange-500/20 group-hover:to-red-500/20 transition-all duration-500">
+                            {getStatusIcon(order.orderStatus)}
+                          </div>
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-xl text-white group-hover:text-orange-400 transition-colors">
+                            Order #{order.orderId}
+                          </h3>
+                          <div className="flex items-center gap-2 text-sm text-zinc-400 mt-1">
+                            <FiCalendar className="w-4 h-4" />
+                            {formatDate(order._createdAt)}
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">Order #{order.orderId}</h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <FiCalendar className="w-4 h-4" />
-                          {formatDate(order._createdAt)}
+                      
+                      <div className="flex flex-col lg:items-end gap-3">
+                        <div className="flex items-center gap-2">
+                          <FiDollarSign className="w-5 h-5 text-green-400" />
+                          <span className="font-bold text-2xl text-white">
+                            {formatPrice(order.totalAmount)}
+                          </span>
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          <span className={`px-4 py-2 rounded-xl text-xs font-semibold border backdrop-blur-sm ${getStatusColor(order.orderStatus)}`}>
+                            {order.orderStatus.replace('_', ' ').toUpperCase()}
+                          </span>
+                          <span className={`px-4 py-2 rounded-xl text-xs font-semibold backdrop-blur-sm ${getPaymentStatusColor(order.paymentStatus)}`}>
+                            {order.paymentStatus.toUpperCase()}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="flex flex-col items-start md:items-end gap-2">
-                      <div className="flex items-center gap-2">
-                        <FiDollarSign className="w-4 h-4 text-green-400" />
-                        <span className="font-semibold text-lg">
-                          {formatPrice(order.totalAmount)}
+                  </div>                  {/* Order Items */}
+                  <div className="p-6 border-b border-zinc-700/30">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <FiPackage className="w-5 h-5 text-orange-400" />
+                        Items ({order.items.length})
+                      </h4>
+                      {order.items.length > 2 && (
+                        <span className="text-sm text-zinc-400">
+                          Showing first 2 items
                         </span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.orderStatus)}`}>
-                          {order.orderStatus.replace('_', ' ').toUpperCase()}
-                        </span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(order.paymentStatus)}`}>
-                          {order.paymentStatus.toUpperCase()}
-                        </span>
-                      </div>
+                      )}
                     </div>
-                  </div>
-
-                  {/* Order Items */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-300 mb-2">Items ({order.items.length})</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {order.items.slice(0, 2).map((item, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
+                        <div key={index} className="group flex items-center gap-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/30 hover:border-orange-500/30 transition-all duration-300">
                           {item.image && (
-                            <div className="w-12 h-12 relative rounded-lg overflow-hidden bg-gray-600">
+                            <div className="w-16 h-16 relative rounded-xl overflow-hidden bg-zinc-700 ring-1 ring-zinc-600">
                               <Image
                                 src={item.image}
                                 alt={item.productName}
                                 fill
-                                className="object-cover"
+                                className="object-cover group-hover:scale-110 transition-transform duration-300"
                               />
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{item.productName}</p>
-                            <p className="text-xs text-gray-400">
-                              Qty: {item.quantity} × {formatPrice(item.price)}
+                            <p className="font-semibold text-white truncate group-hover:text-orange-400 transition-colors">
+                              {item.productName}
+                            </p>
+                            <p className="text-sm text-zinc-400 mt-1">
+                              Qty: <span className="font-medium text-white">{item.quantity}</span> × <span className="font-medium text-green-400">{formatPrice(item.price)}</span>
+                            </p>
+                            <p className="text-xs text-orange-400 font-medium mt-1">
+                              Total: {formatPrice(item.quantity * item.price)}
                             </p>
                           </div>
                         </div>
                       ))}
                       {order.items.length > 2 && (
-                        <div className="col-span-1 md:col-span-2 text-center text-sm text-gray-400">
-                          +{order.items.length - 2} more items
+                        <div className="col-span-1 md:col-span-2 flex items-center justify-center p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/20 border-dashed">
+                          <span className="text-sm text-zinc-400 flex items-center gap-2">
+                            <FiPackage className="w-4 h-4" />
+                            +{order.items.length - 2} more items
+                          </span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* Shipping Address */}
-                  <div className="mb-4 p-3 bg-gray-700/30 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-300 mb-1">Shipping Address</h4>
-                    <p className="text-sm text-gray-400">
-                      {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}
-                    </p>
-                  </div>
-
-                  {/* Tracking Information */}
-                  {order.trackingNumber && (
-                    <div className="mb-4 p-3 bg-blue-900/20 border border-blue-700/30 rounded-lg">
-                      <div className="flex items-center gap-2">
+                  {/* Additional Information */}
+                  <div className="p-6 space-y-4">
+                    {/* Shipping Address */}
+                    <div className="p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/20">
+                      <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
                         <FiTruck className="w-4 h-4 text-blue-400" />
-                        <span className="text-sm font-medium text-blue-300">Tracking Number:</span>
-                        <span className="text-sm text-blue-200 font-mono">{order.trackingNumber}</span>
-                      </div>
+                        Shipping Address
+                      </h4>
+                      <p className="text-sm text-zinc-300 leading-relaxed">
+                        {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}
+                      </p>
                     </div>
-                  )}
 
-                  {/* Action Button */}
-                  <div className="flex justify-end">
-                    <Link
-                      href={`/orders/${order.orderId}`}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg transition-colors text-sm"
-                    >
-                      <FiEye className="w-4 h-4" />
-                      View Details
-                      <FiChevronRight className="w-4 h-4" />
-                    </Link>
+                    {/* Tracking Information */}
+                    {order.trackingNumber && (
+                      <div className="p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/20 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <FiTruck className="w-5 h-5 text-blue-400" />
+                          <div>
+                            <span className="text-sm font-semibold text-blue-300">Tracking Number:</span>
+                            <span className="text-sm text-blue-200 font-mono ml-2 bg-blue-900/30 px-2 py-1 rounded">
+                              {order.trackingNumber}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Button */}
+                    <div className="flex justify-end pt-2">
+                      <Link
+                        href={`/orders/${order.orderId}`}
+                        className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
+                      >
+                        <FiEye className="w-5 h-5" />
+                        View Details
+                        <FiChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              ))}
-
-              {/* Load More Button */}
+              ))}              {/* Load More Button */}
               {pagination.hasMore && (
-                <div className="text-center pt-6">
-                  <button
-                    onClick={loadMore}
-                    disabled={loading}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? (
-                      <>
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      <>
-                        Load More Orders
-                        <FiChevronRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
+                <div className="text-center pt-8">
+                  <div className="bg-gradient-to-br from-zinc-900/90 via-zinc-800/80 to-zinc-900/70 backdrop-blur-xl rounded-2xl p-8 border border-zinc-700/30 max-w-md mx-auto">
+                    <button
+                      onClick={loadMore}
+                      disabled={loading}
+                      className="group w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-zinc-600 disabled:to-zinc-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 disabled:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <>
+                          <FiRefreshCw className="w-5 h-5 animate-spin" />
+                          <span className="font-semibold">Loading more orders...</span>
+                        </>
+                      ) : (
+                        <>
+                          <FiPackage className="w-5 h-5" />
+                          <span className="font-semibold">Load More Orders</span>
+                          <FiChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                    <p className="text-zinc-400 text-sm mt-3">
+                      Showing {orders.length} of {pagination.total} orders
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
