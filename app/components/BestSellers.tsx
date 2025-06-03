@@ -99,19 +99,18 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
         message: "Failed to add item to cart",
         type: "error",
       });
-    }  };
-  return (
+    }  };  return (
     <>
-      <div className="py-20 md:py-24 bg-black text-white">
+      <div className="py-20 md:py-24 bg-white dark:bg-black text-black dark:text-white">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
           <div className="space-y-6">
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-white">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-black dark:text-white">
               <span className="font-light">Best</span>
               <span className="font-bold text-orange-500 ml-4">Sellers</span>
             </h2>
-            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto font-light">
+            <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-light">
               Discover our most beloved creations that define exceptional taste
             </p>
             <Link href="/products" className="inline-block group mt-8">
@@ -130,7 +129,7 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
           {products && products.length > 0 ? (
             products.map((product) => (
               <div key={product._id} className="group">
-                <div className="relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-zinc-800/50 hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
+                <div className="relative bg-zinc-100/50 dark:bg-zinc-900/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10">
                   <Link href={`/products/${product.slug.current}`} className="block">
                     {/* Product Image */}
                     <div className="aspect-square w-full overflow-hidden relative">
@@ -143,17 +142,16 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         />
                       ) : (
-                        <div className="h-full w-full bg-zinc-800 flex items-center justify-center">
+                        <div className="h-full w-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
                           <div className="text-zinc-500 text-sm font-light">No Image</div>
                         </div>
                       )}
                       
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      {/* Gradient overlay */}                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       
                       {/* Out of stock overlay */}
                       {product.inStock === false && (
-                        <div className="absolute inset-0 bg-black/80 flex items-center justify-center backdrop-blur-sm">
+                        <div className="absolute inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center backdrop-blur-sm">
                           <span className="text-white font-semibold px-4 py-2 bg-red-500 rounded-full text-sm">
                             Out of Stock
                           </span>
@@ -163,7 +161,7 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
                     
                     {/* Product Info */}
                     <div className="p-6 space-y-3">
-                      <h3 className="text-lg font-medium text-white group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
+                      <h3 className="text-lg font-medium text-zinc-800 dark:text-white group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
                         {product.name}
                       </h3>
                       <p className="text-xl font-bold text-orange-400">
@@ -177,7 +175,7 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
                       onClick={() => handleAddToCart(product)}
                       className={`w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
                         product.inStock === false
-                          ? 'bg-zinc-700 cursor-not-allowed text-zinc-400 opacity-50'
+                          ? 'bg-zinc-300 dark:bg-zinc-700 cursor-not-allowed text-zinc-500 dark:text-zinc-400 opacity-50'
                           : 'bg-gradient-to-r from-orange-500 to-orange-600 text-black hover:from-orange-400 hover:to-orange-500 hover:scale-105 shadow-lg shadow-orange-500/25'
                       }`}
                       disabled={product.inStock === false}
@@ -191,8 +189,8 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
             ))
           ) : (
             <div className="col-span-full text-center py-20">
-              <p className="text-zinc-500 text-lg font-light">No best sellers found.</p>
-            </div>          )}        </div>
+              <p className="text-zinc-600 dark:text-zinc-500 text-lg font-light">No best sellers found.</p>
+            </div>)}        </div>
       </div>
     </div>
 

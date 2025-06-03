@@ -144,29 +144,27 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
   const incrementQuantity = () => setQuantity((prev) => prev + 1)
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1))
   const toggleWishlist = () => setIsWishlisted((prev) => !prev)
-
   if (isLoading) {
     return (
-      <div className="bg-black min-h-screen flex items-center justify-center">
+      <div className="bg-white dark:bg-black min-h-screen flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="h-32 w-32 bg-zinc-800 rounded-full mb-4"></div>
-          <div className="h-6 w-48 bg-zinc-800 rounded mb-2"></div>
-          <div className="h-4 w-36 bg-zinc-800 rounded"></div>
+          <div className="h-32 w-32 bg-zinc-200 dark:bg-zinc-800 rounded-full mb-4"></div>
+          <div className="h-6 w-48 bg-zinc-200 dark:bg-zinc-800 rounded mb-2"></div>
+          <div className="h-4 w-36 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
         </div>
       </div>
     )
   }
 
   if (error) {
-    return (
-      <div className="bg-black min-h-screen flex items-center justify-center">
-        <div className="text-center p-8 bg-zinc-900 rounded-lg max-w-md">
+    return (      <div className="bg-white dark:bg-black min-h-screen flex items-center justify-center">
+        <div className="text-center p-8 bg-zinc-100 dark:bg-zinc-900 rounded-lg max-w-md">
           <div className="text-red-500 text-5xl mb-4">!</div>
-          <h2 className="text-xl font-bold text-white mb-2">Oops! Something went wrong</h2>
-          <p className="text-zinc-400 mb-4">{error}</p>
+          <h2 className="text-xl font-bold text-black dark:text-white mb-2">Oops! Something went wrong</h2>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-4">{error}</p>
           <Link
             href="/products"
-            className="inline-block bg-white text-black px-6 py-2 rounded-md font-medium hover:bg-gray-200 transition-colors"
+            className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md font-medium transition-colors"
           >
             Back to Products
           </Link>
@@ -176,23 +174,21 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
   }
 
   if (!product) {
-    return (
-      <div className="bg-black min-h-screen flex items-center justify-center">
-        <div className="text-center p-8 bg-zinc-900 rounded-lg max-w-md">
-          <h2 className="text-xl font-bold text-white mb-2">Product Not Found</h2>
-          <p className="text-zinc-400 mb-4">The product you're looking for doesn't exist or has been removed.</p>
+    return (      <div className="bg-white dark:bg-black min-h-screen flex items-center justify-center">
+        <div className="text-center p-8 bg-zinc-100 dark:bg-zinc-900 rounded-lg max-w-md">
+          <h2 className="text-xl font-bold text-black dark:text-white mb-2">Product Not Found</h2>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-4">The product you're looking for doesn't exist or has been removed.</p>
           <Link
             href="/products"
-            className="inline-block bg-white text-black px-6 py-2 rounded-md font-medium hover:bg-gray-200 transition-colors"
+            className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md font-medium transition-colors"
           >
             Browse Products
           </Link>
         </div>
       </div>
     )
-  }
-  return (
-    <div className="bg-black text-white min-h-screen">
+  }  return (
+    <div className="bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Notification
         isOpen={notification.isOpen}
         message={notification.message}
@@ -202,28 +198,25 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Back Button - Top */}
-        <div className="mb-8">
-          <Link
+        <div className="mb-8">          <Link
             href="/products"
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-all duration-300 group"
+            className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-orange-400 transition-all duration-300 group"
           >
             <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
             <span className="font-medium">Back to Products</span>
           </Link>
-        </div>
-
-        {/* Breadcrumb Navigation */}
-        <nav className="mb-8 flex items-center text-sm text-zinc-500">
+        </div>        {/* Breadcrumb Navigation */}
+        <nav className="mb-8 flex items-center text-sm text-zinc-500 dark:text-zinc-500">
           <Link href="/" className="hover:text-orange-400 transition-colors duration-300">
             Home
           </Link>
-          <span className="mx-3 text-zinc-600">/</span>
+          <span className="mx-3 text-zinc-400 dark:text-zinc-600">/</span>
           <Link href="/products" className="hover:text-orange-400 transition-colors duration-300">
             Products
           </Link>
           {product.category && (
             <>
-              <span className="mx-3 text-zinc-600">/</span>
+              <span className="mx-3 text-zinc-400 dark:text-zinc-600">/</span>
               <Link
                 href={`/categories/${product.category.slug.current}`}
                 className="hover:text-orange-400 transition-colors duration-300"
@@ -232,15 +225,14 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
               </Link>
             </>
           )}
-          <span className="mx-3 text-zinc-600">/</span>
-          <span className="text-zinc-400 font-medium truncate max-w-[200px]">{product.name}</span>
+          <span className="mx-3 text-zinc-400 dark:text-zinc-600">/</span>
+          <span className="text-zinc-600 dark:text-zinc-400 font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Product Gallery Section */}
-          <div className="lg:sticky lg:top-24">
-            {product.image && (
-              <div className="rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50">
+          <div className="lg:sticky lg:top-24">            {product.image && (
+              <div className="rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900/50 border border-zinc-300 dark:border-zinc-800/50">
                 <ProductGallery mainImage={product.image} galleryImages={product.gallery} altText={product.name} />
               </div>
             )}
@@ -257,10 +249,8 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                 >
                   {product.category.name}
                 </Link>
-              )}
-
-              <div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-4 leading-tight">
+              )}              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-black dark:text-white mb-4 leading-tight">
                   {product.name}
                 </h1>
 
@@ -269,10 +259,10 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
-                        className={`w-5 h-5 ${star <= 4 ? "fill-yellow-400 text-yellow-400" : "text-zinc-600"}`}
+                        className={`w-5 h-5 ${star <= 4 ? "fill-yellow-400 text-yellow-400" : "text-zinc-400 dark:text-zinc-600"}`}
                       />
                     ))}
-                    <span className="ml-2 text-sm text-zinc-400 font-medium">(24 reviews)</span>
+                    <span className="ml-2 text-sm text-zinc-600 dark:text-zinc-400 font-medium">(24 reviews)</span>
                   </div>
 
                   {product.isBestSeller && (
@@ -286,31 +276,28 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                   {formatCurrency(product.price)}
                 </div>
               </div>
-            </div>
-
-            {/* Product Description */}
-            <div className="py-8 border-t border-b border-zinc-800/50">
-              <h3 className="text-xl font-semibold mb-4 text-white">Description</h3>
+            </div>            {/* Product Description */}
+            <div className="py-8 border-t border-b border-zinc-300 dark:border-zinc-800/50">
+              <h3 className="text-xl font-semibold mb-4 text-black dark:text-white">Description</h3>
               {product.description && Array.isArray(product.description) && product.description.length > 0 ? (
-                <div className="prose prose-lg prose-invert max-w-none text-zinc-300 leading-relaxed">
+                <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed">
                   <PortableText value={product.description} />
                 </div>
               ) : (
-                <p className="text-zinc-500 italic text-lg">No description available.</p>
+                <p className="text-zinc-500 dark:text-zinc-500 italic text-lg">No description available.</p>
               )}
             </div>
 
             {/* Add to Cart Section */}
-            <div className="space-y-8">
-              {/* Quantity Selector */}
+            <div className="space-y-8">              {/* Quantity Selector */}
               <div className="space-y-4">
-                <label htmlFor="quantity" className="text-lg font-medium text-white">
+                <label htmlFor="quantity" className="text-lg font-medium text-black dark:text-white">
                   Quantity
                 </label>
                 <div className="flex items-center w-fit">
                   <button
                     onClick={decrementQuantity}
-                    className="w-12 h-12 flex items-center justify-center rounded-l-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition-all duration-300 hover:scale-105"
+                    className="w-12 h-12 flex items-center justify-center rounded-l-xl bg-zinc-200 dark:bg-zinc-800/50 hover:bg-zinc-300 dark:hover:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-700/50 transition-all duration-300 hover:scale-105"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-5 h-5" />
@@ -322,11 +309,11 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                     min="1"
                     value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, Number.parseInt(e.target.value, 10) || 1))}
-                    className="w-20 h-12 px-4 text-center bg-zinc-800/50 border-y border-zinc-700/50 text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                    className="w-20 h-12 px-4 text-center bg-zinc-200 dark:bg-zinc-800/50 border-y border-zinc-300 dark:border-zinc-700/50 text-black dark:text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                   />
                   <button
                     onClick={incrementQuantity}
-                    className="w-12 h-12 flex items-center justify-center rounded-r-xl bg-zinc-800/50 hover:bg-zinc-700/50 border border-zinc-700/50 transition-all duration-300 hover:scale-105"
+                    className="w-12 h-12 flex items-center justify-center rounded-r-xl bg-zinc-200 dark:bg-zinc-800/50 hover:bg-zinc-300 dark:hover:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-700/50 transition-all duration-300 hover:scale-105"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-5 h-5" />
@@ -346,37 +333,32 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
 
                 <div className="flex gap-4">
                   <button
-                    onClick={toggleWishlist}
-                    className={`flex items-center justify-center w-14 h-14 rounded-xl font-medium border transition-all duration-300 hover:scale-105 ${
+                    onClick={toggleWishlist}                    className={`flex items-center justify-center w-14 h-14 rounded-xl font-medium border transition-all duration-300 hover:scale-105 ${
                       isWishlisted
                         ? "bg-pink-500/20 border-pink-500/50 text-pink-400 shadow-lg shadow-pink-500/20"
-                        : "border-zinc-700/50 hover:border-orange-500/50 text-zinc-300 hover:bg-zinc-800/50"
+                        : "border-zinc-300 dark:border-zinc-700/50 hover:border-orange-500/50 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800/50"
                     }`}
                     aria-label="Add to wishlist"
                   >
                     <Heart className={`w-6 h-6 ${isWishlisted ? "fill-pink-500 text-pink-500" : ""}`} />
-                  </button>
-
-                  <button
-                    className="flex items-center justify-center w-14 h-14 rounded-xl font-medium border border-zinc-700/50 hover:border-orange-500/50 text-zinc-300 transition-all duration-300 hover:scale-105 hover:bg-zinc-800/50"
+                  </button>                  <button
+                    className="flex items-center justify-center w-14 h-14 rounded-xl font-medium border border-zinc-300 dark:border-zinc-700/50 hover:border-orange-500/50 text-zinc-600 dark:text-zinc-300 transition-all duration-300 hover:scale-105 hover:bg-zinc-200 dark:hover:bg-zinc-800/50"
                     aria-label="Share product"
                   >
                     <Share2 className="w-6 h-6" />
                   </button>
                 </div>
               </div>
-            </div>
-
-            {/* Additional Information */}
-            <div className="bg-gradient-to-r from-zinc-900/80 to-zinc-800/80 backdrop-blur-sm rounded-2xl p-6 border border-zinc-800/50">
+            </div>            {/* Additional Information */}
+            <div className="bg-gradient-to-r from-zinc-100 to-zinc-200 dark:from-zinc-900/80 dark:to-zinc-800/80 backdrop-blur-sm rounded-2xl p-6 border border-zinc-300 dark:border-zinc-800/50">
               <div className="flex items-start gap-4">
                 <div className="bg-orange-500/20 p-3 rounded-xl border border-orange-500/30">
                   <ShoppingBag className="w-6 h-6 text-orange-400" />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-white text-lg">Free Delivery</h4>
-                  <p className="text-zinc-400">On orders over Rp 150.000</p>
-                  <p className="text-sm text-zinc-500">Fast and reliable delivery to your doorstep</p>
+                  <h4 className="font-semibold text-black dark:text-white text-lg">Free Delivery</h4>
+                  <p className="text-zinc-600 dark:text-zinc-400">On orders over Rp 150.000</p>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-500">Fast and reliable delivery to your doorstep</p>
                 </div>
               </div>
             </div>

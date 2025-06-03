@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import AccountModal from "./AccountModal";
 import { ClientSignedIn, ClientSignedOut } from "./ClientAuthWrapper";
 import { useCart } from "../(main)/context/CartContext";
+import { ThemeToggle } from "./ThemeToggle";
 import { 
   FiShoppingCart, 
   FiMenu, 
@@ -80,22 +81,20 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <>
-      <nav className={`bg-black/95 backdrop-blur-xl text-white shadow-2xl sticky top-0 z-40 border-b transition-all duration-300 ${
+    <>      <nav className={`bg-white/95 dark:bg-black/95 backdrop-blur-xl text-black dark:text-white shadow-2xl sticky top-0 z-40 border-b transition-all duration-300 ${
         isScrolled 
           ? "border-orange-500/30 shadow-orange-500/10" 
-          : "border-zinc-800/50"
+          : "border-zinc-200 dark:border-zinc-800/50"
       }`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
 
             {/* Left Side: Logo + Mobile Menu Button */}
             <div className="flex items-center space-x-4">
-              {/* Mobile Menu Button */}
-              <button
+              {/* Mobile Menu Button */}              <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 type="button"
-                className="md:hidden inline-flex items-center justify-center p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-110"
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/80 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-110"
                 aria-controls="mobile-menu"
                 aria-expanded={isMobileMenuOpen}
               >
@@ -129,8 +128,7 @@ const Navbar: React.FC = () => {
 
             {/* Center: Navigation Links & Search (Desktop) */}
             <div className="hidden md:flex md:items-center md:space-x-1">              {/* Navigation Links */}
-              <div className="flex items-center space-x-1">
-                {navigationItems.map((item) => {
+              <div className="flex items-center space-x-1">                {navigationItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
                     <Link 
@@ -139,7 +137,7 @@ const Navbar: React.FC = () => {
                       className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group flex items-center space-x-2 ${
                         isActive 
                           ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
-                          : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"
+                          : "text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
                       }`}
                     >
                       <item.icon className="h-4 w-4" />
@@ -158,11 +156,10 @@ const Navbar: React.FC = () => {
                     return (
                       <Link 
                         key={item.href}
-                        href={item.href} 
-                        className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group flex items-center space-x-2 ${
+                        href={item.href}                        className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group flex items-center space-x-2 ${
                           isActive 
                             ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
-                            : "text-zinc-300 hover:text-white hover:bg-zinc-800/50"
+                            : "text-zinc-600 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
                         }`}
                       >
                         <item.icon className="h-4 w-4" />
@@ -180,49 +177,45 @@ const Navbar: React.FC = () => {
               <div className="ml-6">
                 {isSearchOpen ? (
                   <form onSubmit={handleSearch} className="flex items-center">
-                    <div className="relative">
-                      <input
+                    <div className="relative">                      <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search products..."
-                        className="w-64 px-4 py-2 pl-10 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
+                        className="w-64 px-4 py-2 pl-10 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-300 dark:border-zinc-700 rounded-xl text-black dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
                         autoFocus
                       />
-                      <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-400" />
-                    </div>
-                    <button
+                      <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                    </div>                    <button
                       type="button"
                       onClick={() => setIsSearchOpen(false)}
-                      className="ml-2 p-2 text-zinc-400 hover:text-white transition-colors duration-300"
+                      className="ml-2 p-2 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-300"
                     >
                       <FiX className="h-4 w-4" />
                     </button>
                   </form>
-                ) : (
-                  <button
+                ) : (                  <button
                     onClick={() => setIsSearchOpen(true)}
-                    className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-xl transition-all duration-300 group"
+                    className="p-2 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl transition-all duration-300 group"
                   >
                     <FiSearch className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                   </button>
                 )}
               </div>
-            </div>
-
-            {/* Right Side: Notifications, Cart, Wishlist, Auth Controls */}
+            </div>            {/* Right Side: Theme Toggle, Notifications, Cart, Wishlist, Auth Controls */}
             <div className="flex items-center space-x-2">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Search Button (Mobile) */}
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="md:hidden p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-xl transition-all duration-300"
+                className="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl transition-all duration-300"
               >
                 {isSearchOpen ? <FiX className="h-5 w-5" /> : <FiSearch className="h-5 w-5" />}
-              </button>
-
-              {/* Cart Icon */}
-              <Link href="/cart" className="relative text-zinc-400 hover:text-orange-400 group transition-all duration-300">
-                <div className="relative p-2 rounded-xl hover:bg-zinc-800/50 transition-all duration-300">
+              </button>              {/* Cart Icon */}
+              <Link href="/cart" className="relative text-zinc-600 dark:text-zinc-400 hover:text-orange-400 group transition-all duration-300">
+                <div className="relative p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-all duration-300">
                   <FiShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                   {itemCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold animate-bounce">
@@ -235,14 +228,13 @@ const Navbar: React.FC = () => {
               {/* Auth Controls */}
               <div className="flex items-center ml-2">
                 <ClientSignedOut fallback={<div className="hidden md:flex md:space-x-2"></div>}>
-                  <div className="hidden md:flex md:space-x-2">
-                    <Link href="/sign-in">
-                      <button className="px-4 py-2 rounded-xl text-sm font-medium text-black bg-gradient-to-r from-white to-zinc-100 hover:from-zinc-100 hover:to-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-white/20">
+                  <div className="hidden md:flex md:space-x-2">                    <Link href="/sign-in">
+                      <button className="px-4 py-2 rounded-xl text-sm font-medium text-white dark:text-black bg-gradient-to-r from-black to-zinc-800 dark:from-white dark:to-zinc-100 hover:from-zinc-800 hover:to-black dark:hover:from-zinc-100 dark:hover:to-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/20 dark:hover:shadow-white/20">
                         Login
                       </button>
                     </Link>
                     <Link href="/sign-up">
-                      <button className="px-4 py-2 border border-zinc-600 rounded-xl text-sm font-medium text-white bg-transparent hover:bg-gradient-to-r hover:from-orange-500/10 hover:to-orange-600/10 hover:border-orange-500 transition-all duration-300 hover:scale-105">
+                      <button className="px-4 py-2 border border-zinc-400 dark:border-zinc-600 rounded-xl text-sm font-medium text-black dark:text-white bg-transparent hover:bg-gradient-to-r hover:from-orange-500/10 hover:to-orange-600/10 hover:border-orange-500 transition-all duration-300 hover:scale-105">
                         Sign Up
                       </button>
                     </Link>
@@ -276,16 +268,15 @@ const Navbar: React.FC = () => {
           {/* Mobile Search Bar */}
           {isSearchOpen && (
             <div className="md:hidden pb-4">
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="w-full px-4 py-3 pl-12 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
-                  autoFocus
-                />
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-zinc-400" />
+              <form onSubmit={handleSearch} className="relative">                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className="w-full px-4 py-3 pl-12 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-300 dark:border-zinc-700 rounded-xl text-black dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300"
+                    autoFocus
+                  />
+                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 <button
                   type="submit"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 bg-orange-500 text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors duration-300"
@@ -295,9 +286,7 @@ const Navbar: React.FC = () => {
             </div>
           )}
         </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
+      </nav>      {/* Mobile Menu Overlay */}
       <div 
         className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-all duration-300 ${
           isMobileMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -307,20 +296,20 @@ const Navbar: React.FC = () => {
       
       {/* Enhanced Mobile Menu Sidebar */}
       <div
-        className={`md:hidden fixed inset-y-0 left-0 z-50 w-80 bg-gradient-to-b from-zinc-900 to-zinc-950 backdrop-blur-xl shadow-2xl transform transition-all duration-300 ease-out flex flex-col border-r border-zinc-800/50 ${
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-80 bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-900 dark:to-zinc-950 backdrop-blur-xl shadow-2xl transform transition-all duration-300 ease-out flex flex-col border-r border-zinc-200 dark:border-zinc-800/50 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         id="mobile-menu"
       >
         {/* Sidebar Header with Close */}
-        <div className="flex justify-between items-center px-6 py-4 border-b border-zinc-800/50 bg-zinc-900/50">
-          <div className="text-lg font-semibold text-white flex items-center">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-zinc-200 dark:border-zinc-800/50 bg-zinc-50 dark:bg-zinc-900/50">
+          <div className="text-lg font-semibold text-black dark:text-white flex items-center">
             <FiMenu className="mr-2 h-5 w-5 text-orange-400" />
             Menu
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-xl focus:outline-none transition-all duration-300 hover:rotate-90"
+            className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-xl focus:outline-none transition-all duration-300 hover:rotate-90"
             aria-label="Close menu"
           >
             <FiX className="h-6 w-6" />
@@ -357,7 +346,7 @@ const Navbar: React.FC = () => {
                 className={`flex items-center px-4 py-4 rounded-xl text-base font-medium transition-all duration-300 group ${
                   isActive 
                     ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
-                    : "text-white hover:bg-zinc-800/50 hover:text-orange-400"
+                    : "text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-orange-400"
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -379,11 +368,10 @@ const Navbar: React.FC = () => {
               return (
                 <Link 
                   key={item.href}
-                  href={item.href} 
-                  className={`flex items-center px-4 py-4 rounded-xl text-base font-medium transition-all duration-300 group ${
+                  href={item.href}                  className={`flex items-center px-4 py-4 rounded-xl text-base font-medium transition-all duration-300 group ${
                     isActive 
                       ? "text-orange-400 bg-orange-500/10 border border-orange-500/20" 
-                      : "text-white hover:bg-zinc-800/50 hover:text-orange-400"
+                      : "text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-orange-400"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -398,13 +386,12 @@ const Navbar: React.FC = () => {
               );
             })}          </ClientSignedIn>
         </div>
-        
-        {/* Auth Links at Bottom */}
-        <div className="mt-auto px-6 py-8 space-y-3 border-t border-zinc-800/50 bg-zinc-900/30">
+          {/* Auth Links at Bottom */}
+        <div className="mt-auto px-6 py-8 space-y-3 border-t border-zinc-200 dark:border-zinc-800/50 bg-zinc-50 dark:bg-zinc-900/30">
           <ClientSignedOut fallback={<div className="space-y-3"></div>}>
             <Link 
               href="/sign-in" 
-              className="block w-full px-4 py-3 rounded-xl text-center text-base font-medium text-black bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25" 
+              className="block w-full px-4 py-3 rounded-xl text-center text-base font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25" 
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <FiUser className="inline mr-2" />
@@ -412,19 +399,19 @@ const Navbar: React.FC = () => {
             </Link>
             <Link 
               href="/sign-up" 
-              className="block w-full px-4 py-3 rounded-xl text-center text-base font-medium text-white border border-zinc-600 hover:bg-zinc-800/50 hover:border-orange-500 transition-all duration-300 hover:scale-105" 
+              className="block w-full px-4 py-3 rounded-xl text-center text-base font-medium text-black dark:text-white border border-zinc-400 dark:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:border-orange-500 transition-all duration-300 hover:scale-105" 
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Create Account
             </Link>
           </ClientSignedOut>
-          <ClientSignedIn fallback={<div className="w-full px-4 py-3 rounded-xl bg-zinc-700 animate-pulse"></div>}>
+          <ClientSignedIn fallback={<div className="w-full px-4 py-3 rounded-xl bg-zinc-300 dark:bg-zinc-700 animate-pulse"></div>}>
             <button
               onClick={() => {
                 setIsAccountModalOpen(true);
                 setIsMobileMenuOpen(false);
               }}
-              className="w-full px-4 py-3 rounded-xl text-center text-base font-medium text-black bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25 flex items-center justify-center"
+              className="w-full px-4 py-3 rounded-xl text-center text-base font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-orange-500/25 flex items-center justify-center"
             >
               <FiUser className="mr-2" />
               My Account

@@ -43,7 +43,7 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({
     <div className="space-y-4">
       {/* Main Displayed Image */}
       {selectedImageUrl ? (
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-zinc-800">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
           <Image
             key={selectedImage?.asset?._ref} // Use optional chaining for safety
             src={selectedImageUrl}
@@ -55,7 +55,7 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({
           />
         </div>
       ) : (
-         <div className="aspect-square w-full bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-500">
+         <div className="aspect-square w-full bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-400 dark:text-zinc-500">
            No Image Available
          </div>
       )}
@@ -82,9 +82,8 @@ const ProductImageViewer: React.FC<ProductImageViewerProps> = ({
             return thumbUrl ? (
               <button
                 key={imgObj.asset._ref} // Use asset ref as key
-                onClick={() => handleThumbnailClick(imgObj)}
-                className={`relative aspect-square overflow-hidden rounded-md border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-indigo-500 ${
-                  isSelected ? 'border-indigo-500 scale-105' : 'border-zinc-800 hover:border-zinc-600 opacity-70 hover:opacity-100' // Added scale and opacity changes
+                onClick={() => handleThumbnailClick(imgObj)}                className={`relative aspect-square overflow-hidden rounded-md border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black focus:ring-orange-500 ${
+                  isSelected ? 'border-orange-500 scale-105' : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 opacity-70 hover:opacity-100' // Added scale and opacity changes
                 }`}
               >
                 <Image

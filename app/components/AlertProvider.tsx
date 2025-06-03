@@ -120,21 +120,20 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
         return <FiInfo className="w-6 h-6 text-zinc-400" />;
     }
   };
-
   const getTypeStyles = (type: string) => {
     switch (type) {
       case 'success':
-        return 'border-green-500/20 bg-green-900/20';
+        return 'border-green-500/20 bg-green-100/50 dark:bg-green-900/20';
       case 'error':
-        return 'border-red-500/20 bg-red-900/20';
+        return 'border-red-500/20 bg-red-100/50 dark:bg-red-900/20';
       case 'warning':
-        return 'border-yellow-500/20 bg-yellow-900/20';
+        return 'border-yellow-500/20 bg-yellow-100/50 dark:bg-yellow-900/20';
       case 'info':
-        return 'border-blue-500/20 bg-blue-900/20';
+        return 'border-blue-500/20 bg-blue-100/50 dark:bg-blue-900/20';
       case 'loading':
-        return 'border-orange-500/20 bg-orange-900/20';
+        return 'border-orange-500/20 bg-orange-100/50 dark:bg-orange-900/20';
       default:
-        return 'border-zinc-500/20 bg-zinc-900/20';
+        return 'border-zinc-500/20 bg-zinc-100/50 dark:bg-zinc-900/20';
     }
   };
 
@@ -143,32 +142,29 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
       {children}
       
       {/* Alert Modal */}
-      {isVisible && alertConfig && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {isVisible && alertConfig && (        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
           <div 
-            className={`bg-zinc-900 border rounded-lg p-6 max-w-md w-full shadow-2xl transform transition-all duration-300 ${
+            className={`bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 max-w-md w-full shadow-2xl transform transition-all duration-300 ${
               isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
             } ${getTypeStyles(alertConfig.type || 'info')}`}
           >
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
-              {getIcon(alertConfig.type || 'info')}
-              <div>
+              {getIcon(alertConfig.type || 'info')}              <div>
                 {alertConfig.title && (
-                  <h3 className="text-lg font-semibold text-white">{alertConfig.title}</h3>
+                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">{alertConfig.title}</h3>
                 )}
-                <p className="text-zinc-300 leading-relaxed">{alertConfig.message}</p>
+                <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">{alertConfig.message}</p>
               </div>
             </div>
 
             {/* Actions */}
             {(alertConfig.showCancel || alertConfig.onConfirm) && (
-              <div className="flex gap-3 mt-6">
-                {alertConfig.showCancel && (
+              <div className="flex gap-3 mt-6">                {alertConfig.showCancel && (
                   <button
                     onClick={handleCancel}
                     disabled={isLoading}
-                    className="flex-1 py-2 px-4 bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                    className="flex-1 py-2 px-4 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 disabled:bg-zinc-300 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed text-zinc-900 dark:text-white rounded-lg transition-colors"
                   >
                     {alertConfig.cancelText || 'Cancel'}
                   </button>
@@ -190,12 +186,10 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
                   </button>
                 )}
               </div>
-            )}
-
-            {/* Auto-close indicator */}
+            )}            {/* Auto-close indicator */}
             {alertConfig.autoClose !== false && !alertConfig.showCancel && (
               <div className="mt-4 text-center">
-                <p className="text-xs text-zinc-500">This will close automatically</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">This will close automatically</p>
               </div>
             )}
           </div>

@@ -52,13 +52,12 @@ const Footer: React.FC = () => {
 
   if (isExcluded) {
     return null;
-  }
-  return (
-    <footer className="bg-gradient-to-b from-zinc-900 to-black text-zinc-300 py-20 px-6 md:px-10 lg:px-16 border-t border-zinc-800/50">
+  }  return (
+    <footer className="bg-gradient-to-b from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black text-zinc-700 dark:text-zinc-300 py-20 px-6 md:px-10 lg:px-16 border-t border-zinc-200/50 dark:border-zinc-800/50">
       <div className="container mx-auto max-w-7xl">
 
         {/* Top Row: Logo & Newsletter */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 pb-12 border-b border-zinc-800/50">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16 pb-12 border-b border-zinc-200/50 dark:border-zinc-800/50">
           {/* Logo & Brand */}
           <div className="mb-8 lg:mb-0">
             <Link href="/" className="group inline-block">
@@ -72,8 +71,8 @@ const Footer: React.FC = () => {
               </div>
             </Link>
             <div className="mt-4 space-y-2">
-              <h3 className="text-xl font-light text-white">Justeatss.id</h3>
-              <p className="text-sm text-zinc-400 max-w-xs leading-relaxed">
+              <h3 className="text-xl font-light text-black dark:text-white">Justeatss.id</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-xs leading-relaxed">
                 Crafting exceptional culinary experiences with passion and dedication
               </p>
             </div>
@@ -83,8 +82,8 @@ const Footer: React.FC = () => {
           <div className="w-full lg:w-auto lg:max-w-md">
             <div className="space-y-4">
               <div>
-                <h4 className="text-lg font-medium text-white mb-2">Stay Updated</h4>
-                <p className="text-sm text-zinc-400">Get the latest updates on our delicious offerings</p>
+                <h4 className="text-lg font-medium text-black dark:text-white mb-2">Stay Updated</h4>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">Get the latest updates on our delicious offerings</p>
               </div>
               <form className="group">
                 <div className="relative">
@@ -92,11 +91,11 @@ const Footer: React.FC = () => {
                     type="email"
                     id="footer-email"
                     placeholder="Enter your email address"
-                    className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 backdrop-blur-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-zinc-300/50 dark:border-zinc-700/50 text-black dark:text-white placeholder-zinc-500 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all duration-300 backdrop-blur-sm"
                   />
                   <button
                     type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-black font-semibold hover:from-orange-400 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-105 text-sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold hover:from-orange-400 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 hover:scale-105 text-sm"
                   >
                     Subscribe
                   </button>
@@ -107,19 +106,17 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Main Grid: Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-
-          {/* Col 1: Store Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">          {/* Col 1: Store Info */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold text-white mb-6 relative">
+              <h3 className="text-lg font-semibold text-black dark:text-white mb-6 relative">
                 Our Store
                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               </h3>
               <ul className="space-y-3">
                 {stores.map((store) => (
                   <li key={store.name}>
-                    <a href={store.href} className="flex items-center gap-3 hover:text-white group transition-colors duration-300">
+                    <a href={store.href} className="flex items-center gap-3 hover:text-black dark:hover:text-white group transition-colors duration-300">
                       <FaMapMarkerAlt className="text-orange-500 group-hover:text-orange-400 flex-shrink-0 transition-colors duration-300" />
                       <span className="text-sm">{store.name}</span>
                     </a>
@@ -129,10 +126,10 @@ const Footer: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="text-base font-medium text-white mb-4">Hours</h4>
+              <h4 className="text-base font-medium text-black dark:text-white mb-4">Hours</h4>
               <div className="space-y-2">
                 {operationalHours.map((op, index) => (
-                  <p key={index} className="text-sm text-zinc-400">
+                  <p key={index} className="text-sm text-zinc-600 dark:text-zinc-400">
                     {op.hours}
                   </p>
                 ))}
@@ -142,28 +139,28 @@ const Footer: React.FC = () => {
 
           {/* Col 2: Contact */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-6 relative">
+            <h3 className="text-lg font-semibold text-black dark:text-white mb-6 relative">
               Contact Us
               <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
             </h3>
             <div className="space-y-6">
               <div>
-                <p className="font-medium text-white mb-2 text-sm">WhatsApp</p>
+                <p className="font-medium text-black dark:text-white mb-2 text-sm">WhatsApp</p>
                 <a 
                   href="https://wa.me/+6281387017677" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="flex items-center gap-3 hover:text-white group transition-colors duration-300"
+                  className="flex items-center gap-3 hover:text-black dark:hover:text-white group transition-colors duration-300"
                 >
                   <FaWhatsapp className="text-green-500 group-hover:text-green-400 transition-colors duration-300" />
                   <span className="text-sm">+62-813-8701-7677</span>
                 </a>
               </div>
               <div>
-                <p className="font-medium text-white mb-2 text-sm">Email</p>
+                <p className="font-medium text-black dark:text-white mb-2 text-sm">Email</p>
                 <a 
                   href="mailto:info@justeatss.id" 
-                  className="flex items-center gap-3 hover:text-white group transition-colors duration-300"
+                  className="flex items-center gap-3 hover:text-black dark:hover:text-white group transition-colors duration-300"
                 >
                    <FaEnvelope className="text-orange-500 group-hover:text-orange-400 transition-colors duration-300" />
                    <span className="text-sm">info@justeatss.id</span>
@@ -174,7 +171,7 @@ const Footer: React.FC = () => {
 
           {/* Col 3: Information */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-6 relative">
+            <h3 className="text-lg font-semibold text-black dark:text-white mb-6 relative">
               Information
               <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
             </h3>
@@ -183,19 +180,17 @@ const Footer: React.FC = () => {
                 <li key={link.name}>
                   <Link 
                     href={link.href} 
-                    className="text-sm hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
+                    className="text-sm hover:text-black dark:hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
                   >
                     {link.name}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Col 4: Social & Platforms */}
+          </div>          {/* Col 4: Social & Platforms */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold text-white mb-6 relative">
+              <h3 className="text-lg font-semibold text-black dark:text-white mb-6 relative">
                 Available On
                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
               </h3>
@@ -204,7 +199,7 @@ const Footer: React.FC = () => {
                   <li key={platform.name}>
                     <a 
                       href={platform.href} 
-                      className="text-sm hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
+                      className="text-sm hover:text-black dark:hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
                     >
                        {platform.name}
                     </a>
@@ -214,7 +209,7 @@ const Footer: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="text-base font-medium text-white mb-4">Follow Us</h4>
+              <h4 className="text-base font-medium text-black dark:text-white mb-4">Follow Us</h4>
               <div className="flex items-center gap-4">
                  {socialLinks.map(({ name, href, Icon }) => (
                   <a
@@ -223,7 +218,7 @@ const Footer: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={name}
-                      className="text-zinc-400 hover:text-orange-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-800/50 group"
+                      className="text-zinc-600 dark:text-zinc-400 hover:text-orange-400 transition-all duration-300 p-2 rounded-lg hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 group"
                   >
                       <Icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   </a>
@@ -235,8 +230,8 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Row: Copyright */}
-        <div className="text-center border-t border-zinc-800/50 pt-8">
-            <p className="text-zinc-500 text-sm">
+        <div className="text-center border-t border-zinc-200/50 dark:border-zinc-800/50 pt-8">
+            <p className="text-zinc-500 dark:text-zinc-500 text-sm">
                 © {new Date().getFullYear()} Justeatss.id - All Rights Reserved.
             </p>
         </div>
