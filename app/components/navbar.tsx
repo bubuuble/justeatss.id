@@ -33,8 +33,7 @@ const Navbar: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const [notifications] = useState(3); // Dummy notification count
-  // Enhanced navigation items with icons
+  const [notifications] = useState(3); // Dummy notification count  // Enhanced navigation items with icons
   const navigationItems = [
     { href: "/", label: "Home", icon: FiHome, emoji: "🏠" },
     { href: "/products", label: "Products", icon: FiPackage, emoji: "🛍️" },
@@ -397,38 +396,7 @@ const Navbar: React.FC = () => {
                   )}
                 </Link>
               );
-            })}
-          </ClientSignedIn>
-          
-          {/* Divider */}
-          <div className="border-t border-zinc-800/50 my-4" />
-
-          {/* Trending/Hot Deals Section */}
-          <div className="px-4 py-2">
-            <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-2">Quick Access</h3>
-          </div>
-          
-          {/* Cart Link in Mobile Menu */}
-          <Link 
-            href="/cart" 
-            className="flex items-center px-4 py-4 rounded-xl text-base font-medium text-white hover:bg-zinc-800/50 hover:text-orange-400 transition-all duration-300 group" 
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <span className="mr-3 relative">
-              <FiShoppingCart className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
-              {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                  {itemCount}
-                </span>
-              )}
-            </span>
-            <span className="flex-1">Shopping Cart</span>
-            {itemCount > 0 && (
-              <span className="text-orange-400 text-sm font-semibold">
-                {itemCount} item{itemCount > 1 ? 's' : ''}
-              </span>
-            )}
-          </Link>
+            })}          </ClientSignedIn>
         </div>
         
         {/* Auth Links at Bottom */}

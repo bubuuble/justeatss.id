@@ -1,10 +1,14 @@
 // components/BestSellers.tsx
 "use client"; // Still needed for Swiper
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../(main)/context/CartContext';
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { ShoppingBag } from 'lucide-react';
+import Notification from './Notification';
 
 // Define the Product type expected from Sanity (or import from a types file)
 interface Product {
@@ -24,6 +28,13 @@ interface BestSellersProps {
 
 const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
   const { addToCart } = useCart();
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+  const [notification, setNotification] = useState({
+    isOpen: false,
+    message: "",
+    type: "success" as "success" | "error",
+  });
 
   const formatCurrency = (amount: number): string =>
     new Intl.NumberFormat('id-ID', {
@@ -31,8 +42,67 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
       currency: 'IDR',
       minimumFractionDigits: 0,
     }).format(amount);
+
+  const handleAddToCart = (product: Product) => {
+    // Check if user is logged in
+    if (!isLoaded) {
+      setNotification({
+        isOpen: true,
+        message: "Please wait...",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!user) {
+      setNotification({
+        isOpen: true,
+        message: "Please login to add items to cart",
+        type: "error",
+      });
+      // Redirect to login page after a short delay
+      setTimeout(() => {
+        router.push('/sign-in');
+      }, 1500);
+      return;
+    }
+
+    // Check if product is in stock
+    if (product.inStock === false) {
+      setNotification({
+        isOpen: true,
+        message: "This product is currently out of stock",
+        type: "error",
+      });
+      return;
+    }
+
+    // Add to cart
+    const success = addToCart({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      slug: product.slug?.current,
+      inStock: product.inStock
+    });
+
+    if (success) {
+      setNotification({
+        isOpen: true,
+        message: `${product.name} added to cart!`,
+        type: "success",
+      });
+    } else {
+      setNotification({
+        isOpen: true,
+        message: "Failed to add item to cart",
+        type: "error",
+      });
+    }  };
   return (
-    <div className="py-20 md:py-24 bg-black text-white">
+    <>
+      <div className="py-20 md:py-24 bg-black text-white">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
@@ -101,28 +171,19 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
                       </p>
                     </div>
                   </Link>
-                  
-                  {/* Add to Cart Button */}
+                    {/* Add to Cart Button */}
                   <div className="px-6 pb-6">
                     <button
-                      onClick={() => {
-                        addToCart({
-                          id: product._id,
-                          name: product.name,
-                          price: product.price,
-                          imageUrl: product.imageUrl,
-                          slug: product.slug?.current,
-                          inStock: product.inStock
-                        })
-                      }}
-                      className={`w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300 transform ${
+                      onClick={() => handleAddToCart(product)}
+                      className={`w-full flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
                         product.inStock === false
                           ? 'bg-zinc-700 cursor-not-allowed text-zinc-400 opacity-50'
-                          : 'bg-zinc-800 hover:bg-orange-600 text-white hover:scale-105 hover:shadow-lg border border-zinc-700 hover:border-orange-500'
+                          : 'bg-gradient-to-r from-orange-500 to-orange-600 text-black hover:from-orange-400 hover:to-orange-500 hover:scale-105 shadow-lg shadow-orange-500/25'
                       }`}
                       disabled={product.inStock === false}
                     >
-                      {product.inStock === false ? 'Out of Stock' : 'Add to Cart'}
+                      <ShoppingBag className="w-5 h-5" />
+                      <span>{product.inStock === false ? 'Out of Stock' : 'Add to Cart'}</span>
                     </button>
                   </div>
                 </div>
@@ -131,11 +192,18 @@ const BestSellers: React.FC<BestSellersProps> = ({ products }) => {
           ) : (
             <div className="col-span-full text-center py-20">
               <p className="text-zinc-500 text-lg font-light">No best sellers found.</p>
-            </div>
-          )}
-        </div>
+            </div>          )}        </div>
       </div>
     </div>
+
+      {/* Notification Component */}
+      <Notification
+        isOpen={notification.isOpen}
+        message={notification.message}
+        type={notification.type}
+        onClose={() => setNotification(prev => ({ ...prev, isOpen: false }))}
+      />
+    </>
   );
 };
 
