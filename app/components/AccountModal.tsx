@@ -7,6 +7,10 @@ import { SignOutButton, useUser } from "@clerk/nextjs";
 import { FiSettings, FiLogOut, FiX, FiUser, FiMail, FiLock, FiMapPin, FiCamera } from "react-icons/fi";
 import Image from "next/image";
 import ManageAddresses from "./ManageAddresses";
+import Notification from "./Notification"; // Import the Notification component
+
+// Memoized component to prevent re-renders
+const MemoizedManageAddresses = React.memo(ManageAddresses);
 
 interface ProfileData {
   id: string;
@@ -335,19 +339,26 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen, initialT
 
                 {/* Alert Messages */}
                 {error && (
-                  <div className="m-3 sm:m-6 mb-0 bg-red-100/50 dark:bg-red-900/50 border border-red-300/50 dark:border-red-500/50 text-red-700 dark:text-red-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl backdrop-blur-sm">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-red-500 dark:bg-red-400 rounded-full mr-2 sm:mr-3"></div>
-                      <span className="text-xs sm:text-sm">{error}</span>
-                    </div>
+                  <div className="m-3 sm:m-6 mb-0">
+                    <Notification 
+                      message={error} 
+                      type="error" 
+                      isOpen={!!error}
+                      onClose={() => setError(null)}
+                      autoClose={false} // Keep error messages until manually closed or new action
+                    />
                   </div>
                 )}
                 {successMessage && (
-                  <div className="m-3 sm:m-6 mb-0 bg-green-100/50 dark:bg-green-900/50 border border-green-300/50 dark:border-green-500/50 text-green-700 dark:text-green-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl backdrop-blur-sm">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full mr-2 sm:mr-3"></div>
-                      <span className="text-xs sm:text-sm">{successMessage}</span>
-                    </div>
+                  <div className="m-3 sm:m-6 mb-0">
+                    <Notification 
+                      message={successMessage} 
+                      type="success" 
+                      isOpen={!!successMessage}
+                      onClose={() => setSuccessMessage(null)}
+                      autoClose={true}
+                      autoCloseTime={4000} // Auto-close success after 4 seconds
+                    />
                   </div>
                 )}
 
@@ -620,7 +631,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, setIsOpen, initialT
                   {/* Addresses Tab */}
                   {activeTab === 'addresses' && (
                     <div>
-                      <ManageAddresses />
+                      <MemoizedManageAddresses />
                     </div>
                   )}
                 </div>

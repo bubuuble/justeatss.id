@@ -25,6 +25,109 @@ interface Address {
 // Type for form mode
 type FormMode = 'add' | 'edit' | null;
 
+// --- AddressForm Component (Moved Outside) ---
+interface AddressFormProps {
+  isEditing: boolean;
+  street: string; setStreet: (val: string) => void;
+  city: string; setCity: (val: string) => void;
+  stateProv: string; setStateProv: (val: string) => void;
+  postalCode: string; setPostalCode: (val: string) => void;
+  country: string; setCountry: (val: string) => void;
+  phoneNumber: string; setPhoneNumber: (val: string) => void;
+  isDefault: boolean; setIsDefault: (val: boolean) => void;
+  onSubmit: (e: FormEvent) => Promise<void>;
+  onCancel: () => void;
+  isSubmitting: boolean;
+  formError: string | null;
+}
+
+const AddressForm: React.FC<AddressFormProps> = ({
+  isEditing,
+  street, setStreet,
+  city, setCity,
+  stateProv, setStateProv,
+  postalCode, setPostalCode,
+  country, setCountry,
+  phoneNumber, setPhoneNumber,
+  isDefault, setIsDefault,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+  formError
+}) => {
+  return (
+    <form onSubmit={onSubmit} className="mt-4 bg-zinc-50 dark:bg-zinc-800/50 p-3 sm:p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 space-y-3">
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-white mb-2">{isEditing ? 'Edit Address' : 'Add New Address'}</h3>
+        {formError && <p className="text-red-600 dark:text-red-400 text-xs -mt-2 mb-2">{formError}</p>}
+
+        {/* Street */}
+        <div>
+          <label htmlFor="street" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Street Address *</label>
+          <input type="text" id="street" value={street} onChange={(e) => setStreet(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
+        </div>
+        {/* City / State */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="city" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">City *</label>
+              <input type="text" id="city" value={city} onChange={(e) => setCity(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
+            </div>
+            <div>
+              <label htmlFor="stateProv" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">State / Province</label>
+              <input type="text" id="stateProv" value={stateProv} onChange={(e) => setStateProv(e.target.value)} className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
+            </div>
+        </div>
+         {/* Postal / Country */}
+         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="postalCode" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Postal Code *</label>
+              <input type="text" id="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
+            </div>
+            <div>
+              <label htmlFor="country" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Country *</label>
+              <input type="text" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
+            </div>
+        </div>
+        {/* Phone Number */}
+        <div>
+          <label htmlFor="phoneNumber" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Phone Number</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"
+            placeholder="e.g. +1 555-123-4567"
+          />
+        </div>
+        {/* Default Checkbox */}
+        <div className="flex items-center pt-1">
+            <input type="checkbox" id="isDefault" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="h-3 w-3 sm:h-4 sm:w-4 rounded border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-orange-600 focus:ring-orange-500 focus:ring-offset-white dark:focus:ring-offset-zinc-800"/>
+            <label htmlFor="isDefault" className="ml-2 block text-xs text-zinc-700 dark:text-zinc-300">Set as default shipping address</label>
+        </div>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-2">
+           <button
+              type="button"
+              onClick={onCancel}
+              disabled={isSubmitting}
+              className="w-full sm:w-auto px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 rounded text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-50"
+          >
+              Cancel
+           </button>
+           <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto px-4 py-1.5 bg-orange-600 hover:bg-orange-700 rounded text-xs text-white font-semibold disabled:opacity-50 flex items-center justify-center"
+          >
+              {isSubmitting && <LoadingSpinner />}
+              {isSubmitting ? 'Saving...' : (isEditing ? 'Update Address' : 'Save Address')}
+           </button>
+        </div>
+      </form>
+  );
+};
+
+
 // --- The Main Component ---
 export default function ManageAddresses() {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -160,81 +263,6 @@ export default function ManageAddresses() {
     }
   };
 
-  // --- Separate Form Component (for reuse between Add/Edit) ---
-  function AddressForm({ isEditing }: { isEditing: boolean }) {
-    return (
-      <form onSubmit={handleFormSubmit} className="mt-4 bg-zinc-50 dark:bg-zinc-800/50 p-3 sm:p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 space-y-3">
-          <h3 className="text-base font-semibold text-zinc-900 dark:text-white mb-2">{isEditing ? 'Edit Address' : 'Add New Address'}</h3>
-          {formError && <p className="text-red-600 dark:text-red-400 text-xs -mt-2 mb-2">{formError}</p>}
-
-          {/* Street */}
-          <div>
-            <label htmlFor="street" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Street Address *</label>
-            <input type="text" id="street" value={street} onChange={(e) => setStreet(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
-          </div>
-          {/* City / State */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label htmlFor="city" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">City *</label>
-                <input type="text" id="city" value={city} onChange={(e) => setCity(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
-              </div>
-              <div>
-                <label htmlFor="stateProv" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">State / Province</label>
-                <input type="text" id="stateProv" value={stateProv} onChange={(e) => setStateProv(e.target.value)} className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
-              </div>
-          </div>
-           {/* Postal / Country */}
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label htmlFor="postalCode" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Postal Code *</label>
-                <input type="text" id="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
-              </div>
-              <div>
-                <label htmlFor="country" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Country *</label>
-                <input type="text" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"/>
-              </div>
-          </div>
-          {/* Phone Number */}
-          <div>
-            <label htmlFor="phoneNumber" className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">Phone Number</label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-orange-500"
-              placeholder="e.g. +1 555-123-4567"
-            />
-          </div>
-          {/* Default Checkbox */}
-          <div className="flex items-center pt-1">
-              <input type="checkbox" id="isDefault" checked={isDefault} onChange={(e) => setIsDefault(e.target.checked)} className="h-3 w-3 sm:h-4 sm:w-4 rounded border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-orange-600 focus:ring-orange-500 focus:ring-offset-white dark:focus:ring-offset-zinc-800"/>
-              <label htmlFor="isDefault" className="ml-2 block text-xs text-zinc-700 dark:text-zinc-300">Set as default shipping address</label>
-          </div>
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-2">
-             <button
-                type="button"
-                onClick={resetForm} // Use resetForm to cancel add or edit
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 rounded text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-50"
-            >
-                Cancel
-             </button>
-             <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-4 py-1.5 bg-orange-600 hover:bg-orange-700 rounded text-xs text-white font-semibold disabled:opacity-50 flex items-center justify-center"
-            >
-                {isSubmitting && <LoadingSpinner />}
-                {isSubmitting ? 'Saving...' : (isEditing ? 'Update Address' : 'Save Address')}
-             </button>
-          </div>
-        </form>
-        
-    );
-  } // End of AddressForm component
-
   // --- Render Logic ---
   if (isLoading) return <div className="text-center p-4 text-zinc-500 dark:text-zinc-400">Loading addresses...</div>;
 
@@ -250,7 +278,21 @@ export default function ManageAddresses() {
         {addresses.map((addr) => (
           // Show address card OR the edit form if this address is being edited
           editingAddressId === addr.id ? (
-              <AddressForm key={`form-${addr.id}`} isEditing={true} /> // Render form in edit mode
+              <AddressForm
+                key={`form-${addr.id}`}
+                isEditing={true}
+                street={street} setStreet={setStreet}
+                city={city} setCity={setCity}
+                stateProv={stateProv} setStateProv={setStateProv}
+                postalCode={postalCode} setPostalCode={setPostalCode}
+                country={country} setCountry={setCountry}
+                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+                isDefault={isDefault} setIsDefault={setIsDefault}
+                onSubmit={handleFormSubmit}
+                onCancel={resetForm}
+                isSubmitting={isSubmitting}
+                formError={formError}
+              />
           ) : (
             <div key={addr.id} className="bg-white dark:bg-zinc-800 p-3 sm:p-4 rounded-md shadow border border-zinc-200 dark:border-zinc-700 flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-2">
               {/* Address details */}
@@ -276,7 +318,22 @@ export default function ManageAddresses() {
       </div>
 
       {/* --- Add/Edit Form Section --- */}
-      {formMode === 'add' && <AddressForm isEditing={false} />}
+      {formMode === 'add' && (
+        <AddressForm
+            isEditing={false}
+            street={street} setStreet={setStreet}
+            city={city} setCity={setCity}
+            stateProv={stateProv} setStateProv={setStateProv}
+            postalCode={postalCode} setPostalCode={setPostalCode}
+            country={country} setCountry={setCountry}
+            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+            isDefault={isDefault} setIsDefault={setIsDefault}
+            onSubmit={handleFormSubmit}
+            onCancel={resetForm}
+            isSubmitting={isSubmitting}
+            formError={formError}
+        />
+      )}
 
       {/* --- Add New Address Button --- */}
       {formMode === null && ( // Only show button if no form is active

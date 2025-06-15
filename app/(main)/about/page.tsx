@@ -1,96 +1,91 @@
 // app/(main)/about/page.tsx
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiArrowRight } from 'react-icons/fi'; // Example icon for newsletter
+import { FiCoffee, FiHeart, FiUsers, FiAward, FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 
 export default function AboutPage() {
   return (
-    // Using theme-aware classes instead of hardcoded dark colors
     <main className="bg-white dark:bg-black flex-grow text-black dark:text-white">
 
       {/* 1. Hero Section */}
-    <section className="relative h-[65vh] md:h-[75vh] flex items-center justify-center text-center">
-        {/* Background Image */}
+      <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center text-center bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30">
         <Image
-          src="/assets/hero1.jpg" // Replace with your actual hero image path
-          alt="Bakery interior"
+          src="/assets/hero1.jpg" // Using an existing bakery-themed image
+          alt="Artisanal bread and pastries display"
           fill
-          className="object-cover object-center opacity-30" // Dim the background
+          className="object-cover object-center opacity-40 dark:opacity-30"
           priority
         />
-        {/* Overlay Content */}
-        <div className="relative z-10 px-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-shadow-md text-black dark:text-white"> {/* Theme-aware text color */}
-            Our Story
+        <div className="relative z-10 px-4 py-12">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-zinc-800 dark:text-white text-shadow-sm dark:text-shadow-none">
+            The Heart of Justeatss
           </h1>
-          <p className="text-base md:text-lg text-zinc-600 dark:text-zinc-200 max-w-2xl mx-auto text-shadow-sm">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+          <p className="text-lg md:text-xl text-zinc-700 dark:text-zinc-200 max-w-3xl mx-auto leading-relaxed">
+            Discover the passion, craftsmanship, and community spirit that bake Justeatss into a beloved neighborhood bakery.
           </p>
         </div>
       </section>
 
       {/* Container for content sections */}
-      <div className="container mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-20 space-y-16 md:space-y-24">        {/* 2. Foundation Story Section */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-          {/* Text Content */}
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-zinc-100">
-              Foundation Story
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-20 md:space-y-28">
+
+        {/* 2. Our Philosophy Section */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          <div className="space-y-6">
+            <h2 className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center">
+              <FiHeart className="text-orange-500 mr-3 text-4xl" /> Our Baking Philosophy
             </h2>
-            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-lg">
+              At Justeatss,we believe that the best-tasting treats start with the finest ingredients and a sprinkle of love. We source locally whenever possible, supporting our community farmers and ensuring freshness in every bite. Our bakers are artisans, dedicated to traditional techniques while embracing innovative flavors.
             </p>
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
+              From hand-kneaded sourdough to delicate pastries, every item is crafted with meticulous care. We aim to create not just food, but moments of joy and connection for our customers.
             </p>
+            <Link href="/products" className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-medium transition-colors text-lg shadow-md hover:shadow-lg">
+              Explore Our Menu
+            </Link>
           </div>
-          {/* Image Placeholder */}
-          <div className="aspect-video bg-zinc-200 dark:bg-zinc-800 rounded-lg shadow-lg flex items-center justify-center text-zinc-500 dark:text-zinc-500">
-            {/* Replace with <Image /> component when data is ready */}
-            <span>Image Placeholder (16:9)</span>
-          </div>
-        </section>        {/* 3. Second Section (Reversed) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-          {/* Image Placeholder (Order first on mobile, second on desktop) */}
-          <div className="aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-lg shadow-lg flex items-center justify-center text-zinc-500 dark:text-zinc-500 order-last md:order-first">
-             {/* Replace with <Image /> component when data is ready */}
-            <span>Image Placeholder (1:1)</span>
-          </div>
-          {/* Text Content (Order second on mobile, first on desktop) */}
-          <div className="space-y-4 md:order-last">
-            {/* Optional Heading could go here */}
-            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
-            </p>
-          </div>
-        </section>        {/* 4. Third Section ("Where the journey begins") */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-          {/* Text Content */}
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-zinc-100">
-              Where the journey begins
-            </h2>
-            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              Welcome to Justeatss, where every bite tells a story. We believe in bringing the finest, freshest ingredients to your table, making each moment a delicious experience. Join us on this exciting culinary journey and discover the joy of homemade treats, crafted with love.
-            </p>
-              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-            </p>
-          </div>
-          {/* Image Placeholder */}
-          <div className="aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-lg shadow-lg flex items-center justify-center text-zinc-500 dark:text-zinc-500">
-            {/* Replace with <Image /> component when data is ready */}
-            <span>Image Placeholder (1:1)</span>
+          <div className="relative aspect-square rounded-xl overflow-hidden shadow-2xl group">
+            <Image
+              src="/assets/choux1.jpg" // Using an existing bakery-themed image
+              alt="Close-up of freshly baked choux pastries"
+              fill
+              className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <p className="text-white text-lg font-semibold">Crafted with passion daily.</p>
+            </div>
           </div>
         </section>
 
-      </div> {/* End container for content sections */}
-
-      {/* Note: Footer is likely rendered by app/(main)/layout.tsx */}
-
+        {/* 4. Our Commitment Section */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-last md:order-first">
+            <Image
+              src="/assets/coookies.jpg" // Using an existing bakery-themed image
+              alt="Freshly baked cookies on a tray"
+              fill
+              className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+            />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <p className="text-white text-lg font-semibold">Quality you can taste.</p>
+            </div>
+          </div>
+          <div className="space-y-6 md:order-last">
+            <h2 className="text-3xl md:text-4xl font-semibold text-zinc-900 dark:text-zinc-100 flex items-center">
+              <FiAward className="text-orange-500 mr-3 text-4xl" /> Our Commitment
+            </h2>
+            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-lg">
+              We are committed to quality, community, and sustainability. This means using eco-friendly packaging, reducing waste, and giving back through local partnerships. We believe a good bakery is a cornerstone of its community.
+            </p>
+            <ul className="space-y-3 text-zinc-600 dark:text-zinc-400">
+              <li className="flex items-center"><FiCoffee className="text-green-500 mr-2" /> Freshly baked daily, no compromises.</li>
+              <li className="flex items-center"><FiHeart className="text-red-500 mr-2" /> Sourced from local and ethical suppliers.</li>
+              <li className="flex items-center"><FiUsers className="text-blue-500 mr-2" /> A warm and welcoming space for everyone.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
@@ -99,10 +94,10 @@ export default function AboutPage() {
 /*
 @layer utilities {
   .text-shadow-sm {
-    text-shadow: 1px 1px 2px rgb(0 0 0 / 0.4);
+    text-shadow: 1px 1px 2px rgb(0 0 0 / 0.2);
   }
   .text-shadow-md {
-    text-shadow: 1px 1px 3px rgb(0 0 0 / 0.6);
+    text-shadow: 1px 1px 3px rgb(0 0 0 / 0.3);
   }
 }
 */

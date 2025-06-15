@@ -190,26 +190,9 @@ const Footer: React.FC = () => {
           </div>          {/* Col 4: Social & Platforms */}
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-semibold text-black dark:text-white mb-6 relative">
-                Available On
+              <h4 className="text-base font-medium text-black dark:text-white mb-4">Follow Us
                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-orange-500 to-orange-600"></div>
-              </h3>
-              <ul className="space-y-3">
-                {availableOn.map((platform) => (
-                  <li key={platform.name}>
-                    <a 
-                      href={platform.href} 
-                      className="text-sm hover:text-black dark:hover:text-white hover:text-orange-400 transition-colors duration-300 block py-1"
-                    >
-                       {platform.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-base font-medium text-black dark:text-white mb-4">Follow Us</h4>
+              </h4>
               <div className="flex items-center gap-4">
                  {socialLinks.map(({ name, href, Icon }) => (
                   <a
