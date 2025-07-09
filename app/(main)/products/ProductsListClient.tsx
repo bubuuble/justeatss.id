@@ -4,6 +4,8 @@ import { useCart } from "../context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import Notification from "../../components/Notification";
+import { useUser } from './clerkUser';
+import { useRouter } from 'next/navigation';
 
 interface ProductListingItem {
   _id: string;
@@ -32,8 +34,20 @@ const ProductsListClient: React.FC<ProductsListClientProps> = ({ products, searc
   const { addToCart } = useCart();
   const [notifOpen, setNotifOpen] = React.useState(false);
   const [notifMsg, setNotifMsg] = React.useState("");
+  const [notifType, setNotifType] = React.useState<'success' | 'error'>("success");
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
 
   const handleAddToCart = (product: ProductListingItem) => {
+    if (!isLoaded || !user) {
+      setNotifMsg('Please login to add items to cart');
+      setNotifType('error');
+      setNotifOpen(true);
+      setTimeout(() => {
+        router.push('/sign-in');
+      }, 1200);
+      return;
+    }
     const success = addToCart({
       id: product._id,
       name: product.name,
@@ -44,6 +58,7 @@ const ProductsListClient: React.FC<ProductsListClientProps> = ({ products, searc
     });
     if (success) {
       setNotifMsg(`${product.name} added to cart!`);
+      setNotifType('success');
       setNotifOpen(true);
     }
   };
@@ -54,9 +69,9 @@ const ProductsListClient: React.FC<ProductsListClientProps> = ({ products, searc
         message={notifMsg}
         isOpen={notifOpen}
         onClose={() => setNotifOpen(false)}
-        type="success"
+        type={notifType}
         autoClose
-        autoCloseTime={2500}
+        autoCloseTime={notifType === 'error' ? 2000 : 2500}
       />
       <div className="container mx-auto px-4 py-12 md:py-20 max-w-7xl">
         <div className="text-center mb-16 md:mb-20">

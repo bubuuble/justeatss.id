@@ -1,5 +1,5 @@
 // app/(main)/products/page.tsx
-"use client";
+// HAPUS "use client" AGAR JADI SERVER COMPONENT
 import { sanityClient } from '@/sanity/lib/client';
 import { groq } from 'next-sanity';
 import { urlFor } from '@/sanity/lib/image';
@@ -91,4 +91,4 @@ export default async function ProductsPage({
 }
 
 // Optional: Add revalidate for this page if needed
-// export const revalidate = 3600; // Revalidate product list every hour
+export const revalidate = 60; // Revalidate product list every 60 detik (1 menit)
