@@ -1,13 +1,19 @@
 import { client } from '../../../sanity/lib/client'; // Ensure this path is correct
 import Link from 'next/link';
+// Impor kedua fungsi ini untuk konsistensi status dan warna
+import { mapOrderStatuses, getStatusColor, getPaymentStatusColor } from '../orders/[orderId]/orderUtils';
 
-// Quick stats queries
+// Quick stats queries - Disesuaikan agar lebih akurat dengan logika mapOrderStatuses
 const statsQueries = {
   totalOrders: `count(*[_type == "order"])`,
   pendingOrders: `count(*[_type == "order" && orderStatus == "pending_confirmation"])`,
   completedOrders: `count(*[_type == "order" && orderStatus == "delivered"])`,
-  totalRevenue: `*[_type == "order" && paymentStatus == "settlement"]{totalAmount}`,
-  pendingPayments: `count(*[_type == "order" && paymentStatus == "pending"])`,
+  // Total Revenue: Termasuk status pembayaran yang akan menjadi 'paid' setelah dipetakan
+  totalRevenue: `*[_type == "order" && (paymentStatus == "paid" || paymentStatus == "settlement" || paymentStatus == "capture")]{totalAmount}`,
+  // Pending Payments: Hitung hanya yang benar-benar pending (belum delivered/confirmed)
+  pendingPayments: `count(*[_type == "order" && paymentStatus == "pending" && !(orderStatus in ["delivered", "confirmed"])])`,
+  // Paid Payments Count: Hitung status pembayaran yang sudah 'paid', 'settlement', atau 'capture'
+  paidPaymentsCount: `count(*[_type == "order" && (paymentStatus == "paid" || paymentStatus == "settlement" || paymentStatus == "capture")])`,
   failedPayments: `count(*[_type == "order" && paymentStatus in ["failed", "deny", "cancel", "expire"]])`,
 };
 
@@ -21,28 +27,35 @@ const recentOrdersQuery = `
     totalAmount,
     orderStatus,
     paymentStatus,
-    _createdAt
+    _createdAt,
+    paymentDetails
   }
 `;
 
 async function getDashboardData() {
   try {
-    const [statsResults, recentOrders] = await Promise.all([
+    const [statsResults, recentOrdersRaw] = await Promise.all([
       Promise.all(Object.values(statsQueries).map(query => client.fetch(query))),
       client.fetch(recentOrdersQuery)
     ]);
 
+    // Mengambil hasil sesuai urutan di statsQueries
     const [
       totalOrdersCount,
       pendingOrdersCount,
       completedOrdersCount,
-      revenueDataArray,
+      revenueDataArray, // Ini adalah array objek { totalAmount }
       pendingPaymentsCount,
+      paidPaymentsTotalCount, // Menambahkan ini
       failedPaymentsCount
     ] = statsResults;
     
-    const totalRevenueSum = revenueDataArray?.reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0) || 0;
+    // Pastikan totalAmount dari revenueDataArray dijumlahkan dengan benar
+    const totalRevenueSum = (revenueDataArray || []).reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0);
 
+    // Gunakan fungsi pemetaan terpusat untuk konsistensi data di recentOrders
+    const recentOrders = (recentOrdersRaw || []).map(mapOrderStatuses).filter(Boolean);
+    
     return {
       stats: {
         totalOrders: totalOrdersCount || 0,
@@ -50,9 +63,10 @@ async function getDashboardData() {
         completedOrders: completedOrdersCount || 0,
         totalRevenue: totalRevenueSum,
         pendingPayments: pendingPaymentsCount || 0,
+        paidPayments: paidPaymentsTotalCount || 0, // Menggunakan count yang benar
         failedPayments: failedPaymentsCount || 0,
       },
-      recentOrders: recentOrders || []
+      recentOrders
     };
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
@@ -63,6 +77,7 @@ async function getDashboardData() {
         completedOrders: 0,
         totalRevenue: 0,
         pendingPayments: 0,
+        paidPayments: 0, // Fallback juga
         failedPayments: 0,
       },
       recentOrders: []
@@ -70,7 +85,7 @@ async function getDashboardData() {
   }
 }
 
-// Helper functions
+// Helper functions (tinggalkan yang spesifik untuk format tampilan ini)
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('id-ID', { 
     style: 'currency', 
@@ -90,23 +105,9 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-const getStatusColor = (status: string | null | undefined): string => {
-  const colors: Record<string, string> = {
-    'pending_confirmation': 'text-yellow-400 bg-yellow-400/10',
-    'confirmed': 'text-green-400 bg-green-400/10',
-    'processing': 'text-blue-400 bg-blue-400/10',
-    'shipped': 'text-purple-400 bg-purple-400/10',
-    'delivered': 'text-green-500 bg-green-500/10',
-    'cancelled': 'text-red-400 bg-red-400/10',
-    'pending': 'text-yellow-400 bg-yellow-400/10', // For paymentStatus
-    'settlement': 'text-green-400 bg-green-400/10', // For paymentStatus
-    'failed': 'text-red-400 bg-red-400/10', // For paymentStatus
-    'deny': 'text-red-400 bg-red-400/10', // For paymentStatus
-    'cancel': 'text-red-400 bg-red-400/10', // For paymentStatus
-    'expire': 'text-red-400 bg-red-400/10', // For paymentStatus
-  };
-  return status ? (colors[status] || 'text-gray-400 bg-gray-400/10') : 'text-gray-400 bg-gray-400/10';
-};
+// Hapus fungsi getStatusColor lokal yang konflik, sekarang kita import yang terpusat.
+// import { getStatusColor, getPaymentStatusColor } from '../orders/[orderId]/orderUtils';
+// Fungsi-fungsi ini sudah diimpor di bagian atas file.
 
 export default async function AdminDashboard() {
   // Authentication and authorization is handled by the admin layout
@@ -127,7 +128,8 @@ export default async function AdminDashboard() {
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 text-sm sm:text-base"
             >
               📋 Manage Orders
-            </Link>            <Link
+            </Link>
+            <Link
               href="/admin/studio" // Path to your Sanity Studio
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 text-sm sm:text-base"
             >
@@ -148,7 +150,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-   
+    
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           
           <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-2xl p-6">
@@ -163,24 +165,12 @@ export default async function AdminDashboard() {
             </div>
           </div>
 
-         
+          
           <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-zinc-400 text-sm font-medium">Pending Orders</p>
-                <p className="text-3xl font-bold text-yellow-400">{stats.pendingOrders}</p>
-              </div>
-              <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">⏳</span>
-              </div>
-            </div>
-          </div>
-
-        
-          <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-2xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm font-medium">Completed Orders</p>
+                <p className="text-zinc-400 text-sm font-medium">Paid Orders</p>
+                {/* Ini adalah Completed Orders berdasarkan orderStatus, bukan paymentStatus */}
                 <p className="text-3xl font-bold text-green-400">{stats.completedOrders}</p>
               </div>
               <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
@@ -201,14 +191,15 @@ export default async function AdminDashboard() {
             </div>
           </div>
 
-     
+          {/* Menampilkan Paid Payments yang sebenarnya */}
           <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-zinc-400 text-sm font-medium">Pending Payments</p>
-                <p className="text-3xl font-bold text-yellow-400">{stats.pendingPayments}</p>
+                <p className="text-zinc-400 text-sm font-medium">Paid Payments</p>
+                {/* Menggunakan stats.paidPayments yang baru */}
+                <p className="text-3xl font-bold text-green-400">{stats.paidPayments}</p> 
               </div>
-              <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
                 <span className="text-2xl">💳</span>
               </div>
             </div>
@@ -244,8 +235,8 @@ export default async function AdminDashboard() {
             className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 hover:border-yellow-500/50 rounded-xl p-6 text-center transition-all duration-200 hover:scale-105 group"
           >
             <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">⏳</div>
-            <h3 className="font-semibold text-white mb-1">Pending Orders</h3>
-            <p className="text-zinc-400 text-sm">Process pending confirmations</p>
+            <h3 className="font-semibold text-white mb-1">Pending Orders</h3> {/* Label ini juga disesuaikan */}
+            <p className="text-zinc-400 text-sm">Process pending confirmations</p> {/* Deskripsi disesuaikan */}
           </Link>
 
           <Link
@@ -267,7 +258,7 @@ export default async function AdminDashboard() {
           </Link>
         </div>
 
-       
+        
         <div className="bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-2xl p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-white">Recent Orders</h2>
@@ -294,7 +285,7 @@ export default async function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentOrders.map((order: any) => (
+                  {recentOrders.map((order: any) => ( // order.orderStatus dan order.paymentStatus sudah dijamin string oleh mapOrderStatuses
                     <tr key={order._id} className="border-b border-zinc-800 hover:bg-zinc-700/30 transition-colors">
                       <td className="py-4 px-3">
                         <span className="font-mono text-xs text-white">
@@ -309,31 +300,35 @@ export default async function AdminDashboard() {
                       </td>
                       <td className="py-4 px-3">
                         <span className="text-white font-semibold text-sm">
-                          {formatCurrency(order.totalAmount)}
+                          {formatCurrency(order.totalAmount || 0)} {/* Tambahkan fallback */}
                         </span>
                       </td>
                       <td className="py-4 px-3">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(order.orderStatus)}`}>
-                          {order.orderStatus || 'N/A'}
+                        {/* Menggunakan getStatusColor yang diimpor */}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(order.orderStatus || '')}`}>
+                          {order.orderStatus?.replace('_', ' ').toUpperCase() || 'N/A'} {/* Pastikan UPPERCASE */}
                         </span>
                       </td>
                       <td className="py-4 px-3">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(order.paymentStatus)}`}>
-                          {order.paymentStatus || 'N/A'}
+                        {/* MENGGUNAKAN getPaymentStatusColor untuk status pembayaran */}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getPaymentStatusColor(order.paymentStatus || '')}`}>
+                          {order.paymentStatus?.toUpperCase() || 'N/A'} {/* Pastikan UPPERCASE */}
                         </span>
                       </td>
                       <td className="py-4 px-3">
                         <span className="text-zinc-300 text-xs whitespace-nowrap">
-                          {formatDate(order._createdAt)}
+                          {formatDate(order._createdAt || '')} {/* Tambahkan fallback */}
                         </span>
                       </td>
                       <td className="py-4 px-3">
-                        <Link
-                          href={`/admin/orders/${order.orderId}`} // Link to a specific order detail page
-                          className="text-orange-400 hover:text-orange-300 text-xs font-medium transition-colors whitespace-nowrap"
-                        >
-                          View Details
-                        </Link>
+                        {order.orderId && ( // Hanya tampilkan jika orderId ada
+                          <Link
+                            href={`/admin/orders/${order.orderId}`} // Link ke halaman detail pesanan tertentu
+                            className="text-orange-400 hover:text-orange-300 text-xs font-medium transition-colors whitespace-nowrap"
+                          >
+                            View Details
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   ))}

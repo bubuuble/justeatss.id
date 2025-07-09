@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import EnhancedShippingAddress from './EnhancedShippingAddress';
 import QuickActions from './QuickActions';
+import { mapOrderStatuses, getStatusColor, getPaymentStatusColor } from './orderUtils';
+import { Order } from '@/types/Order'; // Pastikan Order diimpor dari lokasi yang benar
 
-// Query to fetch a single order by its orderId
+// Query untuk mengambil satu pesanan berdasarkan orderId-nya
 const singleOrderQuery = `
   *[_type == "order" && orderId == $orderId][0]{
     _id,
@@ -33,60 +35,59 @@ const singleOrderQuery = `
   }
 `;
 
-async function getOrderDetails(orderId: string) {
+async function getRawOrderDetails(orderId: string): Promise<Order | null> {
   try {
-    const order = await client.fetch(singleOrderQuery, { orderId });
-    return order;
+    return await client.fetch(singleOrderQuery, { orderId });
   } catch (error) {
     console.error("Failed to fetch order details:", error);
     return null;
   }
 }
 
-export default async function AdminOrderDetailPage({ 
-  params 
-}: { 
-  params: Promise<{ orderId: string }> 
+// Mendefinisikan tipe Order yang menjamin orderStatus dan paymentStatus adalah string
+// setelah diproses oleh mapOrderStatuses
+interface GuaranteedOrder extends Order {
+  orderStatus: string;
+  paymentStatus: string;
+}
+
+// Next.js Server Component
+export default async function AdminOrderDetailPage({
+  params
+}: {
+  params: { orderId: string } // Next.js params bukan Promise, biarkan seperti ini
 }) {
   const { userId } = await auth();
-  
+
   if (!userId) {
     redirect('/sign-in');
   }
 
-  const resolvedParams = await params;
-  const order = await getOrderDetails(resolvedParams.orderId);
+  // Extract orderId from params to avoid Next.js static analysis issues.
+  const { orderId } = params;
+  const rawOrder = await getRawOrderDetails(orderId);
 
-  if (!order) {
+  if (!rawOrder) {
     notFound();
   }
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      'pending_confirmation': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'confirmed': 'bg-green-100 text-green-800 border-green-200',
-      'processing': 'bg-blue-100 text-blue-800 border-blue-200',
-      'shipped': 'bg-purple-100 text-purple-800 border-purple-200',
-      'delivered': 'bg-emerald-100 text-emerald-800 border-emerald-200',
-      'cancelled': 'bg-red-100 text-red-800 border-red-200',
-      'refunded': 'bg-gray-100 text-gray-800 border-gray-200',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+  // Baris console.log ini akan menampilkan data mentah dari Sanity.
+  console.log('Raw Order Details from Sanity (after fetch):', JSON.stringify(rawOrder, null, 2));
 
-  const getPaymentStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      'pending': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'settlement': 'bg-green-100 text-green-800 border-green-200',
-      'capture': 'bg-green-100 text-green-800 border-green-200',
-      'deny': 'bg-red-100 text-red-800 border-red-200',
-      'cancel': 'bg-red-100 text-red-800 border-red-200',
-      'expire': 'bg-red-100 text-red-800 border-red-200',
-      'failed': 'bg-red-100 text-red-800 border-red-200',
-      'refund': 'bg-gray-100 text-gray-800 border-gray-200',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
+  // Gunakan mapper terpusat untuk tujuan tampilan
+  const mappedOrderResult = mapOrderStatuses(rawOrder);
+
+  // Periksa apakah 'order' masih null setelah dipetakan
+  if (!mappedOrderResult) {
+    notFound();
+  }
+
+  // Sekarang kita tahu mappedOrderResult bukan null, kita bisa assert tipenya
+  const order: GuaranteedOrder = mappedOrderResult as GuaranteedOrder;
+
+  // Baris console.log ini akan menampilkan data setelah diproses oleh mapOrderStatuses.
+  console.log('Mapped Order Details (after mapOrderStatuses):', JSON.stringify(order, null, 2));
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-white">
@@ -96,7 +97,7 @@ export default async function AdminOrderDetailPage({
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-                📦 Order #{order.orderId?.slice(-8)}
+                📦 Order #{order.orderId?.slice(-8) || 'N/A'}
               </h1>
               <p className="text-zinc-400 mt-2">Order management and details</p>
             </div>
@@ -127,22 +128,22 @@ export default async function AdminOrderDetailPage({
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">Order Status</label>
                   <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(order.orderStatus)}`}>
-                    {order.orderStatus?.replace('_', ' ').toUpperCase()}
+                    {order.orderStatus.replace('_', ' ').toUpperCase()} 
                   </span>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">Payment Status</label>
                   <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getPaymentStatusColor(order.paymentStatus)}`}>
-                    {order.paymentStatus?.toUpperCase()}
+                    {order.paymentStatus.toUpperCase()}
                   </span>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">Order Date</label>
-                  <p className="text-white">{new Date(order._createdAt).toLocaleString()}</p>
+                  <p className="text-white">{order._createdAt ? new Date(order._createdAt).toLocaleString() : 'N/A'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-2">Last Updated</label>
-                  <p className="text-white">{new Date(order._updatedAt || order._createdAt).toLocaleString()}</p>
+                  <p className="text-white">{order._updatedAt ? new Date(order._updatedAt).toLocaleString() : (order._createdAt ? new Date(order._createdAt).toLocaleString() : 'N/A')}</p>
                 </div>
               </div>
             </div>
@@ -151,22 +152,22 @@ export default async function AdminOrderDetailPage({
             <div className="bg-zinc-800/50 rounded-lg border border-zinc-700 p-6">
               <h2 className="text-xl font-semibold mb-4 text-orange-400">🛍️ Order Items</h2>
               <div className="space-y-4">
-                {order.items?.map((item: any, index: number) => (
+                {order.items?.map((item, index: number) => (
                   <div key={index} className="flex justify-between items-center py-3 border-b border-zinc-700 last:border-b-0">
                     <div className="flex-1">
-                      <h3 className="font-medium text-white">{item.productName}</h3>
-                      <p className="text-sm text-zinc-400">Quantity: {item.quantity}</p>
+                      <h3 className="font-medium text-white">{item?.productName || 'N/A'}</h3>
+                      <p className="text-sm text-zinc-400">Quantity: {item?.quantity || 0}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-white">IDR {(item.price * item.quantity).toLocaleString()}</p>
-                      <p className="text-sm text-zinc-400">@ IDR {item.price.toLocaleString()}</p>
+                      <p className="font-medium text-white">IDR {((item?.price || 0) * (item?.quantity || 0)).toLocaleString()}</p>
+                      <p className="text-sm text-zinc-400">@ IDR {(item?.price || 0).toLocaleString()}</p>
                     </div>
                   </div>
                 ))}
                 <div className="pt-4 border-t border-zinc-600">
                   <div className="flex justify-between items-center text-lg font-bold">
                     <span className="text-orange-400">Total Amount:</span>
-                    <span className="text-white">IDR {order.totalAmount?.toLocaleString()}</span>
+                    <span className="text-white">IDR {order.totalAmount?.toLocaleString() || '0'}</span>
                   </div>
                 </div>
               </div>
@@ -195,10 +196,10 @@ export default async function AdminOrderDetailPage({
                       <p className="text-white">{new Date(order.paymentDetails.transactionTime).toLocaleString()}</p>
                     </div>
                   )}
-                  {order.paymentDetails.settlementTime && (
+                  {order.paymentDetails.paidTime && (
                     <div>
-                      <label className="block text-sm font-medium text-zinc-300 mb-1">Settlement Time</label>
-                      <p className="text-white">{new Date(order.paymentDetails.settlementTime).toLocaleString()}</p>
+                      <label className="block text-sm font-medium text-zinc-300 mb-1">Paid Time</label>
+                      <p className="text-white">{new Date(order.paymentDetails.paidTime).toLocaleString()}</p>
                     </div>
                   )}
                   {order.paymentDetails.fraudStatus && (
@@ -216,18 +217,18 @@ export default async function AdminOrderDetailPage({
               <div className="bg-zinc-800/50 rounded-lg border border-zinc-700 p-6">
                 <h2 className="text-xl font-semibold mb-4 text-orange-400">📝 Order History</h2>
                 <div className="space-y-4">
-                  {order.orderHistory.map((entry: any, index: number) => (
+                  {order.orderHistory.map((entry, index: number) => (
                     <div key={index} className="flex gap-4 p-4 bg-zinc-700/30 rounded-lg">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded border ${getStatusColor(entry.status)}`}>
-                            {entry.status?.replace('_', ' ')}
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded border ${getStatusColor(entry.status || '')}`}>
+                            {entry.status?.replace('_', ' ').toUpperCase() || 'UNKNOWN'}
                           </span>
-                          <span className="text-sm text-zinc-400">by {entry.updatedBy}</span>
+                          <span className="text-sm text-zinc-400">by {entry.updatedBy || 'System'}</span>
                         </div>
-                        <p className="text-white text-sm">{entry.note}</p>
+                        <p className="text-white text-sm">{entry.note || 'No note provided'}</p>
                         <p className="text-xs text-zinc-500 mt-1">
-                          {new Date(entry.timestamp).toLocaleString()}
+                          {entry.timestamp ? new Date(entry.timestamp).toLocaleString() : 'N/A'}
                         </p>
                       </div>
                     </div>
@@ -245,20 +246,21 @@ export default async function AdminOrderDetailPage({
               <div className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-1">Name</label>
-                  <p className="text-white">{order.userName}</p>
+                  <p className="text-white">{order.userName || 'N/A'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-1">Email</label>
-                  <p className="text-white">{order.userEmail}</p>
+                  <p className="text-white">{order.userEmail || 'N/A'}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-1">User ID</label>
-                  <p className="text-white font-mono text-sm">{order.userId}</p>
+                  <p className="text-white font-mono text-sm">{order.userId || 'N/A'}</p>
                 </div>
               </div>
-            </div>            {/* Enhanced Shipping Address */}
-            <EnhancedShippingAddress 
-              orderId={resolvedParams.orderId} 
+            </div>
+            {/* Enhanced Shipping Address */}
+            <EnhancedShippingAddress
+              orderId={orderId}
               fallbackShippingAddress={order.shippingAddress}
             />
 
@@ -306,11 +308,12 @@ export default async function AdminOrderDetailPage({
                   )}
                 </div>
               </div>
-            )}            {/* Quick Actions */}
-            <QuickActions 
-              orderId={resolvedParams.orderId}
-              currentStatus={order.orderStatus || 'pending_confirmation'}
-              currentPaymentStatus={order.paymentStatus || 'pending'}
+            )}
+            {/* Quick Actions */}
+            <QuickActions
+              orderId={orderId}
+              currentStatus={order.orderStatus}
+              currentPaymentStatus={order.paymentStatus}
             />
           </div>
         </div>

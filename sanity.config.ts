@@ -6,6 +6,7 @@ import { schemaTypes } from '@/sanity/schemaTypes' // Verify path
 
 // --> IMPORT your structure definition <--
 import { structure } from '@/sanity/structure' // Verify path (it exports 'structure')
+import { orderActions } from '@/sanity/actions/orderActions'
 
 export default defineConfig({
   // ... name, title, projectId, dataset ...
@@ -19,11 +20,18 @@ export default defineConfig({
   plugins: [
     // --> CONFIGURE structureTool <--
     structureTool({
-      structure: structure // Pass the imported structure definition
+      structure: structure
     }),
     visionTool()
   ],
-
+  document: {
+    actions: (prev, context) => {
+      if (context.schemaType === 'order') {
+        return [...prev, ...orderActions]
+      }
+      return prev
+    }
+  },
   schema: {
     types: schemaTypes,
   },

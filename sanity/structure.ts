@@ -188,7 +188,7 @@ export const structure: StructureResolver = (S) =>
                 .child(
                   S.documentTypeList('order')
                     .title('Payment Completed')
-                    .filter('_type == "order" && paymentStatus == "settlement"')
+                    .filter('_type == "order" && paymentStatus == "paid"')
                     .defaultOrdering([{field: '_createdAt', direction: 'desc'}])
                 ),
               

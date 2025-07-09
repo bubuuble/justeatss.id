@@ -25,7 +25,7 @@ const STATUS_ACTIONS = [
     icon: '⚙️',
     color: 'bg-blue-600 hover:bg-blue-700',
     status: 'processing',
-    allowedFromStatuses: ['confirmed']
+    allowedFromStatuses: ['confirmed', 'settlement']
   },
   {
     id: 'shipped',
@@ -49,7 +49,7 @@ const STATUS_ACTIONS = [
     icon: '❌',
     color: 'bg-red-600 hover:bg-red-700',
     status: 'cancelled',
-    allowedFromStatuses: ['pending_confirmation', 'confirmed', 'processing', 'shipped']
+    allowedFromStatuses: ['pending_confirmation', 'confirmed', 'processing', 'shipped', 'settlement']
   }
 ];
 
@@ -67,14 +67,9 @@ export default function QuickActions({ orderId, currentStatus, currentPaymentSta
     timestamp: new Date().toISOString()
   });
 
-  // Check which actions are allowed
   const allowedActions = STATUS_ACTIONS.filter(action => 
     action.allowedFromStatuses.includes(currentStatus)
   );
-  console.log('🎯 Allowed actions for current status:', {
-    currentStatus,
-    allowedActions: allowedActions.map(a => ({ id: a.id, label: a.label }))
-  });
 
   const handleStatusUpdate = async (newStatus: string, actionLabel: string) => {
     try {

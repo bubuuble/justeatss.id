@@ -3,37 +3,73 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { FiClock, FiRefreshCw, FiHome, FiInfo } from 'react-icons/fi';
 
 function PaymentPendingContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const orderId = searchParams.get('order_id');
   const transactionStatus = searchParams.get('transaction_status');
+
+  // State untuk detail pesanan yang seharusnya diambil dari backend
+  const [orderDate, setOrderDate] = useState<Date | null>(null);
+  const [expiryDate, setExpiryDate] = useState<Date | null>(null);
   const [timeLeft, setTimeLeft] = useState<string>('');
 
   useEffect(() => {
     console.log('Payment pending for order:', orderId);
-    
-    // Countdown timer (assuming 30 minutes from now)
-    const targetTime = new Date().getTime() + (30 * 60 * 1000);
-    
+
+    // --- LOGIKA TIMER YANG LEBIH BAIK ---
+    // Idealnya, expiryDate dan orderDate didapat dari API Anda menggunakan orderId.
+    // Untuk simulasi, kita akan menyimpan waktu kedaluwarsa di localStorage
+    // agar tidak reset saat halaman di-refresh.
+
+    let targetTime: number;
+    const expiryKey = `justeatss_expiry_${orderId}`;
+    const storedExpiry = localStorage.getItem(expiryKey);
+
+    if (storedExpiry) {
+      targetTime = parseInt(storedExpiry, 10);
+      // Jika waktu kedaluwarsa sudah lewat, jangan mulai timer lagi
+      if (targetTime < new Date().getTime()) {
+        setTimeLeft('Expired');
+        setOrderDate(new Date(targetTime - 1 * 60 * 1000)); // Perkirakan waktu order
+        return;
+      }
+    } else {
+      // Jika tidak ada, buat waktu kedaluwarsa baru (30 menit dari sekarang) dan simpan
+      targetTime = new Date().getTime() + (1 * 60 * 1000);
+      if (orderId) {
+        localStorage.setItem(expiryKey, targetTime.toString());
+      }
+    }
+
+    setExpiryDate(new Date(targetTime));
+    setOrderDate(new Date(targetTime - 30 * 60 * 1000)); // Perkirakan waktu order
+
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const distance = targetTime - now;
-      
+
       if (distance > 0) {
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
+
         setTimeLeft(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
       } else {
         setTimeLeft('Expired');
         clearInterval(interval);
+        // Arahkan ke halaman error jika waktu habis
+        if (orderId) {
+          const newSearchParams = new URLSearchParams();
+          newSearchParams.set('order_id', orderId);
+          newSearchParams.set('status_message', 'Payment time has expired.');
+          router.replace(`/payment/error?${newSearchParams.toString()}`);
+        }
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [orderId]);
 
@@ -91,13 +127,15 @@ function PaymentPendingContent() {
                   <div className="flex justify-between">
                     <span className="text-zinc-400">Waktu Pemesanan:</span>
                     <span className="text-white">
-                      {new Date().toLocaleDateString('id-ID', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
+                      {orderDate
+                        ? orderDate.toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        : 'Loading...'}
                     </span>
                   </div>
                 </div>
@@ -123,13 +161,13 @@ function PaymentPendingContent() {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              <button
-                onClick={() => window.location.reload()}
+              <Link
+                href="/checkout"
                 className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center"
               >
                 <FiRefreshCw className="w-5 h-5 mr-2" />
-                Periksa Status Pembayaran
-              </button>
+                Lanjutkan Pembayaran
+              </Link>
               
               <Link
                 href="/products"

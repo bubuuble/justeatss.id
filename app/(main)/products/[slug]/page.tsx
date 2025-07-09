@@ -26,6 +26,7 @@ interface ProductDetail {
     name: string
     slug: { current: string }
   }
+  inStock?: boolean // gunakan boolean, bukan stock number
 }
 
 const productQuery = groq`
@@ -38,7 +39,8 @@ const productQuery = groq`
     gallery,
     description,
     isBestSeller,
-    category->{ name, slug }
+    category->{ name, slug },
+    inStock
   }
 `
 
@@ -187,7 +189,10 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
         </div>
       </div>
     )
-  }  return (
+  }
+  // Cek stok produk
+  const isOutOfStock = product.inStock === false;
+  return (
     <div className="bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Notification
         isOpen={notification.isOpen}
@@ -299,6 +304,7 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                     onClick={decrementQuantity}
                     className="w-12 h-12 flex items-center justify-center rounded-l-xl bg-zinc-200 dark:bg-zinc-800/50 hover:bg-zinc-300 dark:hover:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-700/50 transition-all duration-300 hover:scale-105"
                     aria-label="Decrease quantity"
+                    disabled={isOutOfStock}
                   >
                     <Minus className="w-5 h-5" />
                   </button>
@@ -310,11 +316,13 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
                     value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, Number.parseInt(e.target.value, 10) || 1))}
                     className="w-20 h-12 px-4 text-center bg-zinc-200 dark:bg-zinc-800/50 border-y border-zinc-300 dark:border-zinc-700/50 text-black dark:text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                    disabled={isOutOfStock}
                   />
                   <button
                     onClick={incrementQuantity}
                     className="w-12 h-12 flex items-center justify-center rounded-r-xl bg-zinc-200 dark:bg-zinc-800/50 hover:bg-zinc-300 dark:hover:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-700/50 transition-all duration-300 hover:scale-105"
                     aria-label="Increase quantity"
+                    disabled={isOutOfStock}
                   >
                     <Plus className="w-5 h-5" />
                   </button>
@@ -323,13 +331,19 @@ const ProductPage: React.FC<ProductPageProps> = ({ params }) => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-black px-8 py-4 rounded-xl font-bold text-lg hover:from-orange-400 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-500/25"
-                >
-                  <ShoppingBag className="w-6 h-6" />
-                  <span>Add to Cart</span>
-                </button>
+                {isOutOfStock ? (
+                  <span className="flex-1 flex items-center justify-center gap-3 bg-zinc-300 dark:bg-zinc-800/50 text-zinc-500 dark:text-zinc-400 px-8 py-4 rounded-xl font-bold text-lg cursor-not-allowed border border-zinc-400 dark:border-zinc-700/50">
+                    Out of Stock
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-orange-600 text-black px-8 py-4 rounded-xl font-bold text-lg hover:from-orange-400 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-orange-500/25"
+                  >
+                    <ShoppingBag className="w-6 h-6" />
+                    <span>Add to Cart</span>
+                  </button>
+                )}
 
                 <div className="flex gap-4">
                   <button

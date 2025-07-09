@@ -76,9 +76,10 @@ export default function CheckoutPage() {
           const defaultAddr = data.find(addr => addr.is_default);
           if (defaultAddr) setSelectedAddress(defaultAddr);
           else if (data.length > 0) setSelectedAddress(data[0]); // Or select the first one
+          setError(null); // clear error if success
         } catch (err: any) {
           console.error("Error loading addresses:", err);
-          // Optionally show this error in the UI
+          setError(err.message || 'Gagal memuat alamat. Silakan coba lagi.');
         } finally {
           setIsLoadingAddresses(false);
         }
@@ -167,8 +168,10 @@ export default function CheckoutPage() {
       // Jika sukses, result akan berisi redirectUrl dari Midtrans
       if (result.redirectUrl) {
         console.log("Mengarahkan ke Midtrans Payment URL:", result.redirectUrl);
-        // Kosongkan keranjang SETELAH redirect sukses
-        clearCart();
+        // Simpan selectedAddress dan cart ke localStorage sebelum redirect ke Midtrans
+        localStorage.setItem('justeatss_selected_address', JSON.stringify(selectedAddress));
+        localStorage.setItem('justeatss_cart', JSON.stringify(cartItems));
+        // Jangan clearCart di sini!
         window.location.href = result.redirectUrl; // Redirect ke halaman pembayaran Midtrans
       } else {
         throw new Error('URL pembayaran Midtrans tidak diterima.');
@@ -245,6 +248,12 @@ export default function CheckoutPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Shipping Address Section */}
+            {/* Tampilkan error jika ada error fetch alamat */}
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
+                <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+              </div>
+            )}
             <div className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
               <h3 className="text-xl font-semibold text-black dark:text-white mb-4">Shipping Address</h3>
               

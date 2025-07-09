@@ -80,14 +80,7 @@ export default defineType({
       options: {
         list: [
           { title: 'Pending', value: 'pending' },
-          { title: 'Settlement (Paid)', value: 'settlement' },
-          { title: 'Capture', value: 'capture' },
-          { title: 'Deny', value: 'deny' },
-          { title: 'Cancel', value: 'cancel' },
-          { title: 'Expire', value: 'expire' },
-          { title: 'Failed', value: 'failed' },
-          { title: 'Refund', value: 'refund' },
-          { title: 'Partial Refund', value: 'partial_refund' },
+          { title: 'Paid', value: 'paid' },
         ],
       },
       initialValue: 'pending',
@@ -142,8 +135,8 @@ export default defineType({
           readOnly: true,
         }),
         defineField({
-          name: 'settlementTime',
-          title: 'Settlement Time',
+          name: 'paidTime',
+          title: 'Paid Time',
           type: 'datetime',
           readOnly: true,
         }),

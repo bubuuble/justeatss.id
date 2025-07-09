@@ -7,7 +7,7 @@ import React from 'react';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SanityLive } from '@/sanity/lib/live';
-import { CartProvider } from '@/app/(main)/context/CartContext'; // <-- IMPORT CartProvider
+import ClientCartProvider from '@/app/components/ClientCartProvider';
 import { AlertProvider } from '@/app/components/AlertProvider'; // <-- IMPORT AlertProvider
 import { ThemeProvider } from '@/app/components/theme-provider';
 
@@ -28,7 +28,7 @@ export default function RootLayout({
         </head>
         <body> {/* Theme classes will be applied automatically */}
           <ThemeProvider>
-            <CartProvider>
+            <ClientCartProvider>
               <AlertProvider>
                 {/* Navbar and Footer are rendered by (main)/layout.tsx */}
                 {children}
@@ -36,7 +36,7 @@ export default function RootLayout({
                 <SpeedInsights />
                 <SanityLive />
               </AlertProvider>
-            </CartProvider>
+            </ClientCartProvider>
           </ThemeProvider>
         </body>
       </html>

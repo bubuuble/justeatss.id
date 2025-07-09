@@ -70,7 +70,7 @@ export default function FilterControls({ currentStatus, currentPayment }: Filter
         >
           <option value="all">All Payments</option>
           <option value="pending">💳 Pending</option>
-          <option value="settlement">💰 Completed</option>
+          <option value="paid">💰 Completed</option>
           <option value="failed">⚠️ Failed</option>
           <option value="cancel">❌ Cancelled</option>
           <option value="refund">🔄 Refunded</option>

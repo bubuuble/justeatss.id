@@ -43,42 +43,38 @@ export async function POST(request: NextRequest) {
     let shouldUpdateOrder = true;
 
     switch (transaction_status) {
-      case 'settlement':
+      case 'paid':
       case 'capture':
         if (fraud_status === 'accept') {
           orderStatus = 'paid';
           console.log(`Payment successful for order ${order_id}`);
-          // TODO: Update order status in database
-          // TODO: Send confirmation email
-          // TODO: Trigger order processing
         } else {
           orderStatus = 'fraud';
           console.log(`Fraudulent payment detected for order ${order_id}`);
         }
         break;
-
+      case 'settlement':
+        orderStatus = 'paid';
+        console.log(`Payment settled for order ${order_id}`);
+        break;
       case 'pending':
         orderStatus = 'pending';
         console.log(`Payment pending for order ${order_id}`);
         break;
-
       case 'deny':
         orderStatus = 'denied';
         console.log(`Payment denied for order ${order_id}`);
         break;
-
       case 'cancel':
       case 'expire':
         orderStatus = 'cancelled';
         console.log(`Payment cancelled/expired for order ${order_id}`);
         break;
-
       case 'refund':
       case 'partial_refund':
         orderStatus = 'refunded';
         console.log(`Payment refunded for order ${order_id}`);
         break;
-
       default:
         console.log(`Unknown transaction status: ${transaction_status} for order ${order_id}`);
         shouldUpdateOrder = false;
@@ -92,10 +88,12 @@ export async function POST(request: NextRequest) {
         if (existingOrder) {
           // Prepare update data
           const updateData: any = {};
-          updateData.paymentStatus = transaction_status;
+          updateData.paymentStatus = (transaction_status === 'settlement' || transaction_status === 'capture' || transaction_status === 'paid')
+            ? 'paid'
+            : (transaction_status === 'pending' ? 'pending' : transaction_status);
 
           // Update order status based on payment status
-          if (transaction_status === 'settlement' || transaction_status === 'capture') {
+          if (transaction_status === 'paid' || transaction_status === 'capture') {
             updateData.orderStatus = 'confirmed';
           } else if (transaction_status === 'pending') {
             updateData.orderStatus = 'pending_confirmation';
@@ -111,7 +109,7 @@ export async function POST(request: NextRequest) {
             transactionId: transaction_id,
             paymentType: payment_type,
             transactionTime: new Date().toISOString(),
-            settlementTime: transaction_status === 'settlement' ? new Date().toISOString() : undefined,
+            paidTime: transaction_status === 'paid' ? new Date().toISOString() : undefined,
             fraudStatus: fraud_status,
             grossAmount: gross_amount,
             signatureKey: signature_key,

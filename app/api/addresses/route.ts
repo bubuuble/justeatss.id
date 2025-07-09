@@ -26,7 +26,7 @@ export async function GET(req: Request) {
 
     const { data: addresses, error } = await supabase
       .from('addresses')
-      .select('*') // '*' includes the new phone_number column
+      .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
@@ -35,10 +35,14 @@ export async function GET(req: Request) {
     return NextResponse.json(addresses || []);
 
   } catch (error: any) {
+    // Tambahkan detail error Supabase ke response saat development
     console.error("GET /api/addresses Error:", error);
-    // Avoid exposing detailed error messages in production if possible
-    const message = process.env.NODE_ENV === 'production' ? 'Error fetching addresses' : error.message;
-    return NextResponse.json({ message: message }, { status: 500 });
+    let message = 'Error fetching addresses';
+    if (process.env.NODE_ENV !== 'production') {
+      if (error?.message) message += `: ${error.message}`;
+      if (error?.code) message += ` (code: ${error.code})`;
+    }
+    return NextResponse.json({ message }, { status: 500 });
   }
 }
 

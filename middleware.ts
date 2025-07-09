@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher, ClerkMiddlewareAuth } from '@clerk
 import { NextResponse } from 'next/server';
 import type { NextFetchEvent, NextRequest } from 'next/server';
 
-const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/midtrans(.*)', '/api/addresses(.*)', '/api/profile(.*)', '/api/debug(.*)']);
+const isIgnoredRoute = createRouteMatcher(['/admin/studio(.*)', '/api/webhooks/(.*)', '/api/midtrans(.*)', '/api/profile(.*)', '/api/debug(.*)']);
 const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/products', '/products/(.*)', '/cart', '/about', '/order-status(.*)', '/api/debug(.*)', '/api/orders/create-sample']);
 const isAdminRoute = createRouteMatcher(['/admin$']);
 
@@ -27,9 +27,7 @@ export default clerkMiddleware(async (auth: ClerkMiddlewareAuth, req: NextReques
     if (!userId) {
       console.log(`[Middleware] No user ID, protecting admin route (will redirect to sign-in).`);
       auth.protect(); // Let Clerk handle the redirect. No need to return its result.
-      return; // Or simply don't have a return here, as protect() will throw.
-                // For clarity, explicitly returning might be okay if TS allows undefined.
-                // However, often protect() will throw, so this return might not be hit.
+      return; // Hapus return 401, biarkan Clerk handle redirect
     }
 
     // User is signed in, check role
@@ -46,7 +44,7 @@ export default clerkMiddleware(async (auth: ClerkMiddlewareAuth, req: NextReques
   if (!isPublicRoute(req)) {
     console.log(`[Middleware] Path ${req.nextUrl.pathname} is NOT public. Protecting.`);
     auth.protect(); // Let Clerk handle the redirect.
-    return; // Similar to above, protect() will throw or redirect.
+    return; // Hapus return 401, biarkan Clerk handle redirect
   }
 
   console.log(`[Middleware] Path ${req.nextUrl.pathname} is PUBLIC or already handled. Allowing.`);

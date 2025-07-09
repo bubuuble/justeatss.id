@@ -1,8 +1,8 @@
-
 // app/context/CartContext.tsx
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useUser } from '@clerk/nextjs';
 
 // Define the shape of your cart item and cart state
 export interface CartItem {
@@ -42,26 +42,30 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Load cart from localStorage on initial mount
+  // Hanya baca localStorage sekali saat mount di client
   useEffect(() => {
-    const storedCart = localStorage.getItem('justeatss_cart');
-    if (storedCart) {
-      try {
-        const parsedCart = JSON.parse(storedCart);
-        if (Array.isArray(parsedCart)) { // Basic validation
-          setCartItems(parsedCart);
+    if (typeof window !== "undefined") {
+      const storedCart = localStorage.getItem('justeatss_cart');
+      if (storedCart) {
+        try {
+          const parsedCart = JSON.parse(storedCart);
+          if (Array.isArray(parsedCart)) {
+            setCartItems(parsedCart);
+          }
+        } catch (e) {
+          console.error("Failed to parse cart from localStorage", e, storedCart);
+          localStorage.removeItem('justeatss_cart');
         }
-      } catch (e) {
-        console.error("Failed to parse cart from localStorage", e);
-        localStorage.removeItem('justeatss_cart'); // Clear corrupted cart
       }
     }
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    if (cartItems.length > 0 || localStorage.getItem('justeatss_cart')) { // Only save if cart had items or was previously saved
-        localStorage.setItem('justeatss_cart', JSON.stringify(cartItems));
+    if (cartItems.length > 0) {
+      localStorage.setItem('justeatss_cart', JSON.stringify(cartItems));
+    } else {
+      localStorage.removeItem('justeatss_cart');
     }
   }, [cartItems]);
 

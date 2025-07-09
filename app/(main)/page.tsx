@@ -16,7 +16,7 @@ interface Product {
   price: number;
   imageUrl?: string; // Correctly typed as optional string
   alt?: string;      // Correctly typed as optional string
-  // Remove image/imageAlt from here if fetching directly like below
+  inStock?: boolean;
 }
 
 // --- CORRECTED GROQ QUERY ---
@@ -29,7 +29,8 @@ const bestSellersQuery = groq`
     slug,
     price,
     "imageUrl": image.asset->url, // Get image URL directly
-    "alt": image.alt // Get alt text from image object (ensure 'alt' field exists in Sanity image schema)
+    "alt": image.alt, // Get alt text from image object (ensure 'alt' field exists in Sanity image schema)
+    inStock
   }
 `;
 // --- END CORRECTION ---

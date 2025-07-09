@@ -180,6 +180,27 @@ const OrderDetailsClient: React.FC<OrderDetailsClientProps> = ({ order }) => {
     }
   };
 
+  const getPaymentStatusDisplay = (status: string) => {
+    const lowerStatus = status.toLowerCase();
+    if (['paid', 'settlement', 'capture', 'success'].includes(lowerStatus)) {
+      return {
+        text: 'Paid',
+        className: 'bg-green-900/20 text-green-300',
+      };
+    }
+    if (['failed', 'cancel', 'expire', 'deny'].includes(lowerStatus)) {
+      return {
+        text: 'Failed',
+        className: 'bg-red-900/20 text-red-300',
+      };
+    }
+    // Default for 'pending'
+    return {
+      text: status.charAt(0).toUpperCase() + status.slice(1),
+      className: 'bg-yellow-900/20 text-yellow-300',
+    };
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -214,6 +235,8 @@ const OrderDetailsClient: React.FC<OrderDetailsClientProps> = ({ order }) => {
 
   const currentStatusIndex = statusSteps.findIndex(step => step.key === order.orderStatus.toLowerCase());
   const isCancelled = order.orderStatus.toLowerCase() === 'cancelled';
+
+  const paymentDisplay = getPaymentStatusDisplay(order.paymentStatus);
 
   return (
     <div className="min-h-screen bg-black">
@@ -367,12 +390,8 @@ const OrderDetailsClient: React.FC<OrderDetailsClientProps> = ({ order }) => {
 
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-400">Payment Status</span>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    order.paymentStatus === 'paid' 
-                      ? 'bg-green-900/20 text-green-300' 
-                      : 'bg-yellow-900/20 text-yellow-300'
-                  }`}>
-                    {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                  <span className={`px-2 py-1 rounded text-xs font-medium ${paymentDisplay.className}`}>
+                    {paymentDisplay.text}
                   </span>
                 </div>
 

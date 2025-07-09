@@ -7,6 +7,7 @@ import { isUserAdmin } from '../../../../../../lib/admin';
 // Valid order status transitions
 const VALID_STATUS_TRANSITIONS: Record<string, string[]> = {
   'pending_confirmation': ['confirmed', 'cancelled'],
+  'settlement': ['processing', 'cancelled'], // Allow transition from legacy settlement status
   'confirmed': ['processing', 'shipped', 'cancelled'], // Allow direct ship for small orders
   'processing': ['shipped', 'cancelled'],
   'shipped': ['delivered', 'cancelled'],
@@ -20,7 +21,7 @@ async function updateOrderStatus(orderId: string, newStatus: string, updatedBy: 
   try {
     // First, get the current order to validate the status transition
     const currentOrder = await client.fetch(
-      `*[_type == "order" && orderId == $orderId][0]{ _id, orderStatus, orderHistory }`,
+      `*[_type == "order" && orderId == $orderId][0]{ _id, orderStatus, paymentStatus, orderHistory }`,
       { orderId }
     );
 
@@ -52,13 +53,20 @@ async function updateOrderStatus(orderId: string, newStatus: string, updatedBy: 
       note: note || `Status updated to ${newStatus.replace('_', ' ')}`
     };
 
+    const patch = client.patch(currentOrder._id);
+
     // Update the order with new status and history
-    const updatedOrder = await client
-      .patch(currentOrder._id)
-      .set({ 
-        orderStatus: newStatus,
-        _updatedAt: new Date().toISOString()
-      })
+    patch.set({ 
+      orderStatus: newStatus,
+      _updatedAt: new Date().toISOString()
+    });
+
+    // If an admin confirms an order, it implies payment is also confirmed.
+    if (newStatus === 'confirmed' && currentOrder.paymentStatus !== 'paid') {
+      patch.set({ paymentStatus: 'paid' });
+    }
+
+    const updatedOrder = await patch
       .setIfMissing({ orderHistory: [] })
       .append('orderHistory', [newHistoryEntry])
       .commit();
